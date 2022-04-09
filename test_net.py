@@ -49,7 +49,7 @@ test_loader_one = DataLoader(
 #     # exit(1)
 
 
-model = NET(2, hidden_features).to(device)
+model = NET(2, hidden_features, RESNET_DEPTH, value_head_size).to(device)
 loss_fn = nn.MSELoss(reduction="mean")
 optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 

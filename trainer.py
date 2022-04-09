@@ -81,9 +81,10 @@ class Optimization:
             for x_test, y_test in test_loader:
                 # x_test = x_test.view([batch_size, -1, n_features]).to(self.device)
                 y_test = y_test.to(self.device)
+                x_test = x_test.to(self.device)
                 self.model.eval()
-                yhat = self.model(x_test)
-                predictions.append(yhat.to(self.device).detach().numpy())
+                policy, value = self.model(x_test)
+                predictions.append(value.to(self.device).detach().numpy())
                 values.append(y_test.to(self.device).detach().numpy())
 
         return predictions, values
