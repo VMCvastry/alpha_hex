@@ -4,7 +4,7 @@ import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader, TensorDataset
 
-from net import CNN
+from net import NET
 from variables import *
 from trainer import Optimization
 
@@ -24,7 +24,7 @@ test_loader_one = torch.tensor(
     [[[[1, 0, 0], [1, 0, 0], [1, 0, 0]], [[1, 0, 0], [1, 0, 0], [1, 0, 0]]]],
     dtype=torch.float32,
 )
-N = 200
+
 test_loader_one = torch.tensor(
     [[[[1, 1, 1]] * 3] * 2] * N + [[[[0, 0, 0]] * 3] * 2] * N,
     dtype=torch.float32,
@@ -36,7 +36,9 @@ dataset = TensorDataset(
     .unsqueeze(1)
     .unsqueeze(1),
 )
-test_loader_one = DataLoader(dataset, batch_size=10, shuffle=False, drop_last=False)
+test_loader_one = DataLoader(
+    dataset, batch_size=batch_size, shuffle=False, drop_last=False
+)
 
 # for samples, targets in test_loader_one:
 #     print(samples.size())
@@ -47,7 +49,7 @@ test_loader_one = DataLoader(dataset, batch_size=10, shuffle=False, drop_last=Fa
 #     # exit(1)
 
 
-model = CNN(2, 4).to(device)
+model = NET(2, hidden_features).to(device)
 loss_fn = nn.MSELoss(reduction="mean")
 optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
@@ -69,4 +71,4 @@ opt.train(
 )
 # opt.plot_losses()
 predictions, values = opt.evaluate(test_loader_one, batch_size=1, n_features=2)
-print(predictions, values)
+# print(predictions, values)
