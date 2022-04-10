@@ -19,11 +19,9 @@ class PolicyHead(nn.Module):
         x: torch.Tensor,
     ) -> torch.Tensor:
         x = self.conv(x)
-        print(x.size())
         s = self.batch_norm(x)
         x = F.relu(x)
-        print(x.size())
+        x = x.reshape((-1, 18))  # double grid to vector
         x = self.fcl(x)
-        print(x.size())
-
+        x = x.reshape(-1, 3, 3)  # vector to grid
         return x

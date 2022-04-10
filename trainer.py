@@ -33,10 +33,10 @@ class Optimization:
         self.model.train()
 
         # Makes predictions
-        yhat = self.model(x)
+        policy, value = self.model(x)
 
         # Computes loss
-        loss = self.loss_fn(y, yhat)
+        loss = self.loss_fn(y, value)
 
         # Computes gradients
         loss.backward()
@@ -67,8 +67,8 @@ class Optimization:
                     # x_val = x_val.view([batch_size, -1, n_features]).to(self.device)
                     y_val = y_val.to(self.device)
                     self.model.eval()
-                    yhat = self.model(x_val)
-                    val_loss = self.loss_fn(y_val, yhat).item()
+                    policy, value = self.model(x_val)
+                    val_loss = self.loss_fn(y_val, value).item()
                     batch_val_losses.append(val_loss)
                 validation_loss = np.mean(batch_val_losses)
                 self.val_losses.append(validation_loss)
