@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import logging
-import random
 
 from game import Game
-from mcst import MCTS
+from old_mcst.mcst import MCTS
 
 logging.basicConfig(level=logging.INFO)
 
@@ -18,8 +17,8 @@ def turn(game, move):
 
 def test():
     # game = Game([[None, None, None], [1, -1, None], [None, 1, -1]])
-    game = Game([[1, None, None], [1, -1, None], [-1, 1, -1]])
-    # game = Game()
+    # game = Game([[1, None, None], [1, -1, None], [-1, 1, -1]])
+    game = Game()
     while 1:
         tree = MCTS(game.get_state())
         move = tree.search()

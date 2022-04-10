@@ -140,4 +140,6 @@ cython_debug/
 
 
 .idea/
+models/
+old_mcst/
 
