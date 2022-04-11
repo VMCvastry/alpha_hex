@@ -40,9 +40,10 @@ class NET(nn.Module):
         x = self.residuals(x)
         policy = self.policy_head(x)
         value = self.value_head(x)
+
         # x = self.conv_compress(x)
-        #
         # x = F.max_pool2d(x, kernel_size=2)
+        # value = x
 
         # x = x.view(x.shape[0], -1)
         # x = self.fc1(x)

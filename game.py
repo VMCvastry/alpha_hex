@@ -23,8 +23,8 @@ class Game:
 
     class Move:
         def __init__(self, x, y, player):
-            self.x = x
-            self.y = y
+            self.x: int = x
+            self.y: int = y
             self.mark = player
 
         def __str__(self):

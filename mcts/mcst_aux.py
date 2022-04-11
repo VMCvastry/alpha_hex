@@ -7,6 +7,8 @@ from game import Game
 
 
 def get_move_prior(priors, move: Game.Move):
+    # print(priors)
+    # print(priors[move.x][move.y])
     return float(priors[move.x][move.y])
 
 
@@ -20,13 +22,13 @@ class Aux_MCTS:
             state,
             prior,
             parent: Aux_MCTS.Node | None,
-            move: Game.Move = None,
+            move: Game.Move | None,
         ):
             self.state = state
             self.value = 0
             self.visits = 0
             self.prior = prior
-            self.subs = set()
+            self.subs: set[Aux_MCTS.Node] = set()
             self.parent: Aux_MCTS.Node = parent
             self.move = move
 
@@ -58,6 +60,13 @@ class Aux_MCTS:
         return best_node.move
 
     @staticmethod
+    def get_policy(node: Aux_MCTS.Node):
+        grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]  # todo set to -1 illegal moves
+        for n in node.subs:
+            grid[n.move.x][n.move.y] = n.get_mean_value()
+        return grid
+
+    @staticmethod
     def choose_child(node: Aux_MCTS.Node) -> Aux_MCTS.Node:
         return max(node.subs, key=lambda x: x.interest())
 
@@ -72,6 +81,7 @@ class Aux_MCTS:
                     state=new_game.get_state(),
                     prior=get_move_prior(prior_moves, move),
                     parent=node,
+                    move=move,
                 )
             )
         node.expanded = True

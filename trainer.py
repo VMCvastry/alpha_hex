@@ -15,7 +15,8 @@ def process_state(state) -> torch.Tensor:
     data = torch.tensor(
         split_board(state),
         dtype=torch.float32,
-    )  # todo add batch dimension
+    )
+    data = data.unsqueeze(0)  # add batch dimension
     return data
 
 
@@ -108,4 +109,4 @@ class Optimization:
         with torch.no_grad():
             self.model.eval()  # todo check
             policy, value = self.model(processed_data)
-        return policy, value
+        return policy.squeeze(0), value.squeeze(0)  # remove batch dimension

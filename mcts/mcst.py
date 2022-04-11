@@ -4,7 +4,7 @@ import time
 from collections import Counter
 
 from game import Game
-from mcst_aux import Aux_MCTS
+from .mcst_aux import Aux_MCTS
 
 SIMULATIONS_CAP = 100
 TIME_CAP = 100000000000
@@ -14,24 +14,27 @@ class MCTS:
     def __init__(self, network, init_state):
         self.network = network
         self.graph: Aux_MCTS.Node = Aux_MCTS.Node(
-            state=init_state, prior=-1, parent=None
+            state=init_state, prior=-1, parent=None, move=None
         )
         self.total_simulations = 0
         self.start_time = time.time()
 
-    def search(self):
+    def search(self) -> tuple[Game.Move, list[list]]:
         while (
             self.total_simulations < SIMULATIONS_CAP
             and time.time() - self.start_time < TIME_CAP
         ):
             self.step()
-        return Aux_MCTS.pick_best_move(self.graph)
+            print(Aux_MCTS.pick_best_move(self.graph))
+        return Aux_MCTS.pick_best_move(self.graph), Aux_MCTS.get_policy(self.graph)
 
     def step(self):
         self.total_simulations += 1
         next_node = self.graph
         while True:
-            if next_node.visits < 1:
+            if (
+                next_node.visits < 1 or not next_node.subs
+            ):  # todo check "or not next_node.subs"
                 break
             next_node = Aux_MCTS.choose_child(next_node)
         outcome = self.simulate(next_node)

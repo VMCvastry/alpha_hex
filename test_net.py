@@ -29,6 +29,10 @@ test_loader_one = torch.tensor(
     [[[[1, 1, 1]] * 3] * 2] * N + [[[[0, 0, 0]] * 3] * 2] * N,
     dtype=torch.float32,
 )
+test = torch.tensor(
+    [[[[1, 1, 1]] * 3] * 2] * 3 + [[[[0, 0, 0]] * 3] * 2] * 3,
+    dtype=torch.float32,
+)
 dataset = TensorDataset(
     test_loader_one,
     torch.tensor([1] * N + [0] * N, dtype=torch.float32)
@@ -36,10 +40,17 @@ dataset = TensorDataset(
     .unsqueeze(1)
     .unsqueeze(1),
 )
+datasetT = TensorDataset(
+    test,
+    torch.tensor([1] * 3 + [0] * 3, dtype=torch.float32)
+    .unsqueeze(1)
+    .unsqueeze(1)
+    .unsqueeze(1),
+)
 test_loader_one = DataLoader(
     dataset, batch_size=batch_size, shuffle=False, drop_last=False
 )
-
+test = DataLoader(datasetT, batch_size=batch_size, shuffle=False, drop_last=False)
 # for samples, targets in test_loader_one:
 #     print(samples.size())
 #     # samples.view([1, -1, 1])
@@ -70,5 +81,5 @@ opt.train(
     n_features=2,
 )
 # opt.plot_losses()
-predictions, values = opt.evaluate(test_loader_one, batch_size=1, n_features=2)
-# print(predictions, values)
+predictions, values = opt.evaluate(test, batch_size=1, n_features=2)
+print(predictions, values)
