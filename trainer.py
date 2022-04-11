@@ -23,34 +23,50 @@ def process_state(state) -> torch.Tensor:
     return data
 
 
+def crap_loss(predicted_value, value, predicted_policy, policy):
+    # return (value- predicted_value ) ** 2-
+    # print(predicted_value, value)
+    # print(predicted_policy, policy)
+    return torch.mean((value - predicted_value) ** 2) + torch.mean(
+        (policy - predicted_policy) ** 2
+    )
+
+
 class Trainer:
     def __init__(self, model=None, loss_fn=None, optimizer=None):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if not model:
-            NET(2, HIDDEN_FEATURES, RESNET_DEPTH, VALUE_HEAD_SIZE).to(self.device)
+            model = NET(2, HIDDEN_FEATURES, RESNET_DEPTH, VALUE_HEAD_SIZE).to(
+                self.device
+            )
         self.model = model
         if not loss_fn:
-            loss_fn = nn.MSELoss(reduction="mean")
+            # loss_fn = nn.MSELoss(reduction="mean")
+            loss_fn = crap_loss
         self.loss_fn = loss_fn
         if not optimizer:
-            optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
+            optimizer = optim.Adam(
+                model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY
+            )
         self.optimizer = optimizer
         self.train_losses = []
         self.val_losses = []
 
-    def train_step(self, x, y):
+    def train_step(self, state, value, policy):
         # Sets model to train mode
         self.model.train()
 
         # Makes predictions
-        policy, value = self.model(x)
+        predicted_policy, predicted_value = self.model(state)
 
-        # Computes loss
-        loss = self.loss_fn(y, value)
-
-        # Computes gradients
+        # # Computes loss
+        # value_loss = self.loss_fn(value, predicted_value)
+        # policy_loss = self.loss_fn(policy, predicted_policy)
+        # # Computes gradients
+        # value_loss.backward()
+        # policy_loss.backward()
+        loss = self.loss_fn(predicted_value, value, predicted_policy, policy)
         loss.backward()
-
         # Updates parameters and zeroes gradients
         self.optimizer.step()
         self.optimizer.zero_grad()
@@ -63,26 +79,27 @@ class Trainer:
 
         for epoch in range(1, n_epochs + 1):
             batch_losses = []
-            for x_batch, y_batch in train_loader:
+            for x_batch, value_batch, policy_batch in train_loader:
                 # x_batch = x_batch.view([batch_size, -1, n_features]).to(self.device)
-                y_batch = y_batch.to(self.device)
-                loss = self.train_step(x_batch, y_batch)
+                value_batch = value_batch.to(self.device)
+                policy_batch = policy_batch.to(self.device)
+                loss = self.train_step(x_batch, value_batch, policy_batch)
                 batch_losses.append(loss)
             training_loss = np.mean(batch_losses)
             self.train_losses.append(training_loss)
 
-            with torch.no_grad():
-                batch_val_losses = []
-                for x_val, y_val in val_loader:
-                    # x_val = x_val.view([batch_size, -1, n_features]).to(self.device)
-                    y_val = y_val.to(self.device)
-                    self.model.eval()
-                    policy, value = self.model(x_val)
-                    val_loss = self.loss_fn(y_val, value).item()
-                    batch_val_losses.append(val_loss)
-                validation_loss = np.mean(batch_val_losses)
-                self.val_losses.append(validation_loss)
-
+            # with torch.no_grad():
+            #     batch_val_losses = []
+            #     for x_val, y_val in val_loader:
+            #         # x_val = x_val.view([batch_size, -1, n_features]).to(self.device)
+            #         y_val = y_val.to(self.device)
+            #         self.model.eval()
+            #         policy, value = self.model(x_val)
+            #         val_loss = self.loss_fn(y_val, value).item()
+            #         batch_val_losses.append(val_loss)
+            #     validation_loss = np.mean(batch_val_losses)
+            #     self.val_losses.append(validation_loss)
+            validation_loss = -1
             if (epoch <= 10) | (epoch % 50 == 0):
                 print(
                     f"[{epoch}/{n_epochs}] Training loss: {training_loss:.4f}\t Validation loss: {validation_loss:.4f}"
