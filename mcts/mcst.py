@@ -25,7 +25,7 @@ class MCTS:
             and time.time() - self.start_time < TIME_CAP
         ):
             self.step()
-            print(Aux_MCTS.pick_best_move(self.graph))
+            # print(Aux_MCTS.pick_best_move(self.graph))
         return Aux_MCTS.pick_best_move(self.graph), Aux_MCTS.get_policy(self.graph)
 
     def step(self):

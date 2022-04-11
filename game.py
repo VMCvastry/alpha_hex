@@ -7,7 +7,7 @@ import logging
 class Game:
     def __init__(self, board: list = None, player=1):
         if board is None:
-            self.board = [[None] * 3 for i in range(3)]
+            self.board = [[0] * 3 for i in range(3)]
         else:
             self.board = copy.deepcopy(board)
         self.player = player
@@ -41,18 +41,18 @@ class Game:
     def check_tic_tac_toe(self) -> int | None:
         # Check rows
         for i in range(3):
-            if self.board[i][0] == self.board[i][1] == self.board[i][2] is not None:
+            if self.board[i][0] == self.board[i][1] == self.board[i][2] != 0:
                 return self.board[i][0]
         # Check columns
         for i in range(3):
-            if self.board[0][i] == self.board[1][i] == self.board[2][i] is not None:
+            if self.board[0][i] == self.board[1][i] == self.board[2][i] != 0:
                 return self.board[0][i]
         # Check diagonals
-        if self.board[0][0] == self.board[1][1] == self.board[2][2] is not None:
+        if self.board[0][0] == self.board[1][1] == self.board[2][2] != 0:
             return self.board[0][0]
-        if self.board[0][2] == self.board[1][1] == self.board[2][0] is not None:
+        if self.board[0][2] == self.board[1][1] == self.board[2][0] != 0:
             return self.board[0][2]
-        if all((self.board[x][y] is not None for x in range(3) for y in range(3))):
+        if all((self.board[x][y] != 0 for x in range(3) for y in range(3))):
             return 0
         return None
 
@@ -60,7 +60,7 @@ class Game:
         moves = set()
         for i in range(3):
             for j in range(3):
-                if self.board[i][j] is None:
+                if self.board[i][j] == 0:
                     moves.add(Game.Move(i, j, self.player))
         return moves
 
