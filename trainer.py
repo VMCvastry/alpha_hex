@@ -117,18 +117,27 @@ class Trainer:
 
     def evaluate(self, test_loader, batch_size=1, n_features=1):
         with torch.no_grad():
-            predictions = []
+            values_predictions = []
+            policies_predictions = []
             values = []
-            for x_test, y_test in test_loader:
+            policies = []
+            for x_test, value, policy in test_loader:
                 # x_test = x_test.view([batch_size, -1, n_features]).to(self.device)
-                y_test = y_test.to(self.device)
+                value = value.to(self.device)
+                policy = policy.to(self.device)
                 x_test = x_test.to(self.device)
                 self.model.eval()
-                policy, value = self.model(x_test)
-                predictions.append(value.to(self.device).detach().numpy())
-                values.append(y_test.to(self.device).detach().numpy())
+                predicted_policy, predicted_value = self.model(x_test)
+                values_predictions.append(
+                    predicted_value.to(self.device).detach().numpy()
+                )
+                policies_predictions.append(
+                    predicted_policy.to(self.device).detach().numpy()
+                )
+                values.append(value.to(self.device).detach().numpy())
+                policies.append(policy.to(self.device).detach().numpy())
 
-        return predictions, values
+        return values_predictions, values, policies_predictions, policies
 
     def poll(self, data):
         processed_data = process_state(data)
