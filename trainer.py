@@ -19,7 +19,6 @@ def process_state(state) -> torch.Tensor:
         split_board(state),
         dtype=torch.float32,
     )
-    data = data.unsqueeze(0)  # add batch dimension
     return data
 
 
@@ -33,12 +32,17 @@ def crap_loss(predicted_value, value, predicted_policy, policy):
 
 
 class Trainer:
-    def __init__(self, model=None, loss_fn=None, optimizer=None):
+    def __init__(
+        self, *args, model_name=None, model=None, loss_fn=None, optimizer=None
+    ):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if not model:
             model = NET(2, HIDDEN_FEATURES, RESNET_DEPTH, VALUE_HEAD_SIZE).to(
                 self.device
             )
+            if model_name:
+                model.load_state_dict(torch.load(f"models/{model_name}.pt"))
+                model.eval()
         self.model = model
         if not loss_fn:
             # loss_fn = nn.MSELoss(reduction="mean")
@@ -75,7 +79,7 @@ class Trainer:
         return loss.item()
 
     def train(self, train_loader, val_loader, batch_size=64, n_epochs=50, n_features=1):
-        model_path = f'models/{type(self.model).__name__}_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.pt'
+        model_name = f'{type(self.model).__name__}_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
 
         for epoch in range(1, n_epochs + 1):
             batch_losses = []
@@ -105,7 +109,8 @@ class Trainer:
                     f"[{epoch}/{n_epochs}] Training loss: {training_loss:.4f}\t Validation loss: {validation_loss:.4f}"
                 )
 
-        torch.save(self.model.state_dict(), model_path)
+        torch.save(self.model.state_dict(), f"models/{model_name}.pt")
+        return model_name
 
     def plot_losses(self):
         plt.plot(self.train_losses, label="Training loss")
@@ -141,6 +146,7 @@ class Trainer:
 
     def poll(self, data):
         processed_data = process_state(data)
+        processed_data = processed_data.unsqueeze(0)  # add batch dimension
         with torch.no_grad():
             self.model.eval()  # todo check
             policy, value = self.model(processed_data)

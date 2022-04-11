@@ -24,5 +24,4 @@ game = Game([[1, None, None], [1, -1, None], [-1, 1, -1]])
 player = MCTS(trainer, game.get_state())
 print(player.search())
 print(game)
-
 # print(opt.poll([[1, None, None], [1, -1, None], [-1, 1, -1]]))

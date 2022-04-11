@@ -5,12 +5,12 @@ from mcts.mcst import MCTS
 from game import Game
 from net import NET
 from variables import *
-from trainer import Trainer
+from trainer import Trainer, split_board
 import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader, TensorDataset
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 
 
 class PlayGame:
@@ -32,22 +32,29 @@ class PlayGame:
                 return self.game.check_tic_tac_toe()
 
 
-def run_self_play():
-    trainer = Trainer()
+def run_self_play(data_path, model_path):
+    logging.warning("Starting self play")
+    trainer = Trainer(model_name=model_path)
     data = None
-    for _ in range(N_GAMES):
+    for n_game in range(N_GAMES):
+        print(f"\rGame {n_game}/{N_GAMES}", end=" ")
         game = PlayGame(trainer)
         outcome = game.play()
         states, priors = game.states, game.policies
-        outcomes = torch.Tensor([outcome] * len(states))
-        states = torch.Tensor(states)
+        outcomes = (
+            torch.Tensor([outcome] * len(states)).unsqueeze(1).unsqueeze(1).unsqueeze(1)
+        )
+        states = torch.tensor(
+            [split_board(state) for state in states], dtype=torch.float32
+        )
         priors = torch.tensor(priors)
         if not data:
             data = CustomDataset(states, outcomes, priors)
         else:
             data.append(states, outcomes, priors)
-    data.store("./training_data", "test")
+    print(data.__len__())
+    data.store("./training_data", data_path)
 
 
 if __name__ == "__main__":
-    run_self_play()
+    run_self_play("gen1", None)

@@ -19,7 +19,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # test_loader = DataLoader(test, batch_size=batch_size, shuffle=False, drop_last=True)
 # test_loader_one = DataLoader(test, batch_size=1, shuffle=False, drop_last=True)
 
-
+N = 200
 train_data = torch.tensor(
     [[[[1, 1, 1]] * 3] * 2] * N + [[[[0, 0, 0]] * 3] * 2] * N,
     dtype=torch.float32,
