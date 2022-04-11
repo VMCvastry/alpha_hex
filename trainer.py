@@ -100,7 +100,7 @@ class Trainer:
             #     validation_loss = np.mean(batch_val_losses)
             #     self.val_losses.append(validation_loss)
             validation_loss = -1
-            if (epoch <= 10) | (epoch % 50 == 0):
+            if (epoch <= 10) | (epoch % 50 == 0) | (epoch == n_epochs):
                 print(
                     f"[{epoch}/{n_epochs}] Training loss: {training_loss:.4f}\t Validation loss: {validation_loss:.4f}"
                 )

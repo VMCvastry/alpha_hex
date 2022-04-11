@@ -23,6 +23,6 @@ class PolicyHead(nn.Module):
         x = F.relu(x)
         x = x.reshape((-1, 18))  # double grid to vector
         x = self.fcl(x)
+        x = F.softmax(x, dim=1)  # to get probability distribution
         x = x.reshape(-1, 3, 3)  # vector to grid
-        # todo check not a prob distibution
         return x

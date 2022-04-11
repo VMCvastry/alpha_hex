@@ -31,7 +31,7 @@ train_dataset = CustomDataset(
     .unsqueeze(1)
     .unsqueeze(1),
     torch.tensor(
-        [[[1, 1, 1]] * 3] * N + [[[0, 0, 0]] * 3] * N,
+        [[[1, 0, 0]] * 3] * N + [[[0, 0, 1]] * 3] * N,
         dtype=torch.float32,
     ),
 )
@@ -48,7 +48,7 @@ test_dataset = TensorDataset(
     .unsqueeze(1)
     .unsqueeze(1),
     torch.tensor(
-        [[[1, 1, 1]] * 3] * 3 + [[[0, 0, 0]] * 3] * 3,
+        [[[1, 0, 0]] * 3] * 3 + [[[0, 0, 1]] * 3] * 3,
         dtype=torch.float32,
     ),
 )
