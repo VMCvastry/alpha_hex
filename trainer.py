@@ -1,8 +1,11 @@
 import numpy as np
 import torch
 from datetime import datetime
-
+from torch import nn, optim
 from matplotlib import pyplot as plt
+
+from net import NET
+from variables import *
 
 
 def split_board(state):  # todo when to switch?
@@ -20,14 +23,20 @@ def process_state(state) -> torch.Tensor:
     return data
 
 
-class Optimization:
-    def __init__(self, model, loss_fn, optimizer):
+class Trainer:
+    def __init__(self, model=None, loss_fn=None, optimizer=None):
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if not model:
+            NET(2, HIDDEN_FEATURES, RESNET_DEPTH, VALUE_HEAD_SIZE).to(self.device)
         self.model = model
+        if not loss_fn:
+            loss_fn = nn.MSELoss(reduction="mean")
         self.loss_fn = loss_fn
+        if not optimizer:
+            optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
         self.optimizer = optimizer
         self.train_losses = []
         self.val_losses = []
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def train_step(self, x, y):
         # Sets model to train mode

@@ -5,25 +5,24 @@ from mcts.mcst import MCTS
 from game import Game
 from net import NET
 from variables import *
-from trainer import Optimization
+from trainer import Trainer
 import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader, TensorDataset
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 logging.basicConfig(level=logging.INFO)
 
 
 class PlayGame:
-    def __init__(self, opt):
+    def __init__(self, trainer):
         self.game = Game()
-        self.opt = opt
+        self.trainer = trainer
         self.states = []
         self.policies = []
 
     def play(self):
         while True:
-            player = MCTS(self.opt, self.game.get_state())
+            player = MCTS(self.trainer, self.game.get_state())
             move, policy = player.search()
             self.states.append(self.game.get_state())
             self.policies.append(policy)
@@ -34,15 +33,10 @@ class PlayGame:
 
 
 def run_self_play():
-    model = NET(2, hidden_features, RESNET_DEPTH, value_head_size).to(device)
-    loss_fn = nn.MSELoss(reduction="mean")
-    optimizer = optim.Adam(
-        model.parameters(), lr=learning_rate, weight_decay=weight_decay
-    )
-    opt = Optimization(model=model, loss_fn=loss_fn, optimizer=optimizer)
+    trainer = Trainer()
     data = None
     for _ in range(N_GAMES):
-        game = PlayGame(opt)
+        game = PlayGame(trainer)
         outcome = game.play()
         states, priors = game.states, game.policies
         outcomes = torch.Tensor([outcome] * len(states))

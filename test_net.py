@@ -4,9 +4,10 @@ import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader, TensorDataset
 
+from custom_dataset import CustomDataset
 from net import NET
 from variables import *
-from trainer import Optimization
+from trainer import Trainer
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -33,13 +34,18 @@ test = torch.tensor(
     [[[[1, 1, 1]] * 3] * 2] * 3 + [[[[0, 0, 0]] * 3] * 2] * 3,
     dtype=torch.float32,
 )
-dataset = TensorDataset(
+dataset = CustomDataset(
     test_loader_one,
     torch.tensor([1] * N + [0] * N, dtype=torch.float32)
     .unsqueeze(1)
     .unsqueeze(1)
     .unsqueeze(1),
+    torch.tensor(
+        [[[1, 1, 1]] * 3] * N + [[[0, 0, 0]] * 3] * N,
+        dtype=torch.float32,
+    ),
 )
+
 datasetT = TensorDataset(
     test,
     torch.tensor([1] * 3 + [0] * 3, dtype=torch.float32)
@@ -48,21 +54,18 @@ datasetT = TensorDataset(
     .unsqueeze(1),
 )
 test_loader_one = DataLoader(
-    dataset, batch_size=batch_size, shuffle=False, drop_last=False
+    dataset, batch_size=BATCH_SIZE, shuffle=False, drop_last=False
 )
-test = DataLoader(datasetT, batch_size=batch_size, shuffle=False, drop_last=False)
-# for samples, targets in test_loader_one:
-#     print(samples.size())
-#     # samples.view([1, -1, 1])
-#     print(samples)
-#     # targets = targets.unsqueeze(0).unsqueeze(0).unsqueeze(0)
-#     print(targets)
-#     # exit(1)
+test = DataLoader(datasetT, batch_size=BATCH_SIZE, shuffle=False, drop_last=False)
+for samples, targets1, targets2 in test_loader_one:
+    print(samples.size())
+    # samples.view([1, -1, 1])
+    print(samples)
+    # targets = targets.unsqueeze(0).unsqueeze(0).unsqueeze(0)
+    print(targets1)
+    print(targets2)
+    exit(1)
 
-
-model = NET(2, hidden_features, RESNET_DEPTH, value_head_size).to(device)
-loss_fn = nn.MSELoss(reduction="mean")
-optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
 # for images, labels in test_loader_one:
 #     images = images.to(device)
@@ -72,14 +75,14 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight
 #     print(outputs)
 #     print(outputs.size())
 # exit(1)
-opt = Optimization(model=model, loss_fn=loss_fn, optimizer=optimizer)
-opt.train(
+trainer = Trainer()
+trainer.train(
     test_loader_one,
     val_loader=[],
-    batch_size=batch_size,
-    n_epochs=n_epochs,
+    batch_size=BATCH_SIZE,
+    n_epochs=N_EPOCHS,
     n_features=2,
 )
 # opt.plot_losses()
-predictions, values = opt.evaluate(test, batch_size=1, n_features=2)
+predictions, values = trainer.evaluate(test, batch_size=1, n_features=2)
 print(predictions, values)
