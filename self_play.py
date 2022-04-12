@@ -17,10 +17,11 @@ import threading
 
 class PlayGame:
     def __init__(self, trainer):
-        self.game = Game()
+        self.game: Game = Game()
         self.trainer = trainer
         self.states = []
         self.policies = []
+        self.turn = []
         self.outcome = None
 
     def play(self):
@@ -30,6 +31,7 @@ class PlayGame:
             self.states.append(self.game.get_state())
             self.policies.append(policy)
             self.game.set_mark(move)
+            self.turn.append(self.game.player)
             if self.game.check_tic_tac_toe() is not None:
                 logging.info("{} wins!".format(self.game.check_tic_tac_toe()))
                 self.outcome = self.game.check_tic_tac_toe()
@@ -38,13 +40,14 @@ class PlayGame:
     def get_tensors(self):
         states, priors = self.states, self.policies
         outcomes = (
-            torch.Tensor([self.outcome] * len(states))
+            torch.Tensor([self.outcome * self.turn[i] for i in range(len(states))])
             .unsqueeze(1)
             .unsqueeze(1)
             .unsqueeze(1)
         )
         states = torch.tensor(
-            [split_board(state) for state in states], dtype=torch.float32
+            [split_board(states[i], self.turn[i]) for i in range(len(states))],
+            dtype=torch.float32,
         )
         priors = torch.tensor(priors)
         return states, outcomes, priors

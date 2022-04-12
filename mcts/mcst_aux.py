@@ -4,6 +4,7 @@ import logging
 import random
 import numpy as np
 from game import Game
+from variables import *
 
 
 def get_move_prior(priors, move: Game.Move):
@@ -13,7 +14,7 @@ def get_move_prior(priors, move: Game.Move):
 
 
 class Aux_MCTS:
-    exploration_parameter = np.sqrt(2)
+    # exploration_parameter = np.sqrt(2)
 
     class Node:
         def __init__(
@@ -46,7 +47,7 @@ class Aux_MCTS:
             return sum((s.visits for s in subs))
 
         def interest(self):
-            return self.get_mean_value() + Aux_MCTS.exploration_parameter * (
+            return self.get_mean_value() + EXPLORATION_PARAMETER * (
                 self.prior * np.sqrt(self.layer_visits()) / (self.visits + 1)
             )
 
@@ -71,8 +72,7 @@ class Aux_MCTS:
         return max(node.subs, key=lambda x: x.interest())
 
     @staticmethod
-    def expand(node: Aux_MCTS.Node, prior_moves):
-        game = Game(node.state)
+    def expand(node: Aux_MCTS.Node, prior_moves, game: Game):
         for move in game.get_available_moves():
             new_game = game.__copy__()
             new_game.set_mark(move)

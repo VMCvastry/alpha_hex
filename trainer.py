@@ -8,15 +8,15 @@ from net import NET
 from variables import *
 
 
-def split_board(state):  # todo when to switch?
-    first_plane = [[1 if x == 1 else 0 for x in y] for y in state]
-    second_plane = [[1 if x == -1 else 0 for x in y] for y in state]
-    return [first_plane, second_plane]
+def split_board(state, player):  # todo when to switch?
+    current_player_plane = [[1 if x == player else 0 for x in y] for y in state]
+    second_plane = [[1 if x == -1 * player else 0 for x in y] for y in state]
+    return [current_player_plane, second_plane]
 
 
-def process_state(state) -> torch.Tensor:
+def process_state(state, player: int) -> torch.Tensor:
     data = torch.tensor(
-        split_board(state),
+        split_board(state, player),
         dtype=torch.float32,
     )
     return data
@@ -144,8 +144,8 @@ class Trainer:
 
         return values_predictions, values, policies_predictions, policies
 
-    def poll(self, data):
-        processed_data = process_state(data)
+    def poll(self, data, player):
+        processed_data = process_state(data, player)
         processed_data = processed_data.unsqueeze(0)  # add batch dimension
         with torch.no_grad():
             self.model.eval()  # todo check

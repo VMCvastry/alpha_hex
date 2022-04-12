@@ -45,6 +45,6 @@ class MCTS:
         winner = game.check_tic_tac_toe()
         if winner is not None:  # todo check
             return winner
-        moves, outcome = self.network.poll(node.state)
-        Aux_MCTS.expand(node, moves)
+        moves, outcome = self.network.poll(node.state, node.get_next_player())
+        Aux_MCTS.expand(node, moves, game)
         return outcome
