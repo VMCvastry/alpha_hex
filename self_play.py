@@ -1,4 +1,5 @@
 import logging
+from concurrent.futures import ThreadPoolExecutor
 
 from custom_dataset import CustomDataset
 from mcts.mcst import MCTS
@@ -55,7 +56,8 @@ def play_game_thread(trainer, data, n_game, lock):
     (states, outcomes, priors) = game.get_tensors()
     data.append((states, outcomes, priors))
     lock.acquire()
-    n_game += 1
+    n_game[0] += 1
+    print(f"\rGame {n_game[0]}/{N_GAMES}", end=" ")
     lock.release()
     return outcome
 
@@ -65,14 +67,18 @@ def run_self_play(data_path, model_path):
     trainer = Trainer(model_name=model_path)
     data_set = None
     data = []
-    n_game = 0
+    n_game = [0]
     lock = threading.Lock()
-    while True:
-        if n_game > N_GAMES:
-            break
-        print(f"\rGame {n_game}/{N_GAMES}", end=" ")
-        play_game_thread(trainer, data, n_game, lock)
 
+    with ThreadPoolExecutor(max_workers=12) as executor:
+        results = executor.map(
+            play_game_thread,
+            [trainer] * N_GAMES,
+            [data] * N_GAMES,
+            [n_game] * N_GAMES,
+            [lock] * N_GAMES,
+        )
+    print(results)
     for i in range(len(data)):
         if i == 0:
             data_set = CustomDataset(data[i][0], data[i][1], data[i][2])
