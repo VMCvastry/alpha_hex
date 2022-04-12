@@ -23,5 +23,5 @@ class ValueHead(nn.Module):
         x = self.fcl1(x)
         x = F.relu(x)
         x = self.fcl2(x)
-        x = F.tanh(x)
+        x = torch.tanh(x)
         return x
