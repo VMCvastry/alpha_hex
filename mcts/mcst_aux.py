@@ -55,6 +55,10 @@ class Aux_MCTS:
             return f"{self.move},value {self.value}, visits={round(self.visits)}"
 
     @staticmethod
+    def flip_state(state, player):
+        return [[player * s for s in row] for row in state]
+
+    @staticmethod
     def pick_best_move(node: Aux_MCTS.Node):
         logging.info([str(n) for n in node.subs])
         best_node = max(node.subs, key=lambda x: x.visits)

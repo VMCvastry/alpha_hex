@@ -26,12 +26,12 @@ class PlayGame:
 
     def play(self):
         while True:
-            player = MCTS(self.trainer, self.game.get_state())
+            player = MCTS(self.trainer, self.game.get_state(), self.game.player)
             move, policy = player.search()
             self.states.append(self.game.get_state())
             self.policies.append(policy)
-            self.game.set_mark(move)
             self.turn.append(self.game.player)
+            self.game.set_mark(move)
             if self.game.check_tic_tac_toe() is not None:
                 logging.info("{} wins!".format(self.game.check_tic_tac_toe()))
                 self.outcome = self.game.check_tic_tac_toe()

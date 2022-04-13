@@ -11,10 +11,14 @@ TIME_CAP = 100000000000
 
 
 class MCTS:
-    def __init__(self, network, init_state):
+    def __init__(self, network, init_state, player):
         self.network = network
+        self.player = player
         self.graph: Aux_MCTS.Node = Aux_MCTS.Node(
-            state=init_state, prior=-1, parent=None, move=None
+            state=Aux_MCTS.flip_state(init_state, player),
+            prior=-1,
+            parent=None,
+            move=None,
         )
         self.total_simulations = 0
         self.start_time = time.time()
@@ -26,7 +30,9 @@ class MCTS:
         ):
             self.step()
             # print(Aux_MCTS.pick_best_move(self.graph))
-        return Aux_MCTS.pick_best_move(self.graph), Aux_MCTS.get_policy(self.graph)
+        move = Aux_MCTS.pick_best_move(self.graph)
+        move.mark = self.player
+        return move, Aux_MCTS.get_policy(self.graph)
 
     def step(self):
         self.total_simulations += 1

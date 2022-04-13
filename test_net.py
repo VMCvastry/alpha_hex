@@ -53,14 +53,15 @@ test_dataset = TensorDataset(
     ),
 )
 test = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, drop_last=False)
-# for samples, targets1, targets2 in test_loader_one:
-#     print(samples.size())
-#     # samples.view([1, -1, 1])
-#     print(samples)
-#     # targets = targets.unsqueeze(0).unsqueeze(0).unsqueeze(0)
-#     print(targets1)
-#     print(targets2)
-#     exit(1)
+test_loader_one = CustomDataset.load("./training_data", "gen1")
+for samples, targets1, targets2 in test_loader_one:
+    print(samples.size())
+    # samples.view([1, -1, 1])
+    print(samples)
+    # targets = targets.unsqueeze(0).unsqueeze(0).unsqueeze(0)
+    print(targets1)
+    print(targets2)
+    # exit(1)
 
 
 # for images, labels in test_loader_one:

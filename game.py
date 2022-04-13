@@ -31,6 +31,7 @@ class Game:
             return "({}, {}) by {}".format(self.x, self.y, self.mark)
 
     def set_mark(self, move: Move):
+        assert move.mark == self.player
         self.board[move.x][move.y] = move.mark
         winner = self.check_tic_tac_toe()
         if winner is not None:
