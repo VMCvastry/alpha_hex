@@ -46,8 +46,8 @@ class Aux_MCTS:
             subs = self.parent.subs
             return sum((s.visits for s in subs))
 
-        def interest(self):
-            return self.get_mean_value() + EXPLORATION_PARAMETER * (
+        def interest(self,exploration):
+            return self.get_mean_value() + exploration * (
                 self.prior * np.sqrt(self.layer_visits()) / (self.visits + 1)
             )
 
@@ -72,8 +72,8 @@ class Aux_MCTS:
         return grid
 
     @staticmethod
-    def choose_child(node: Aux_MCTS.Node) -> Aux_MCTS.Node:
-        return max(node.subs, key=lambda x: x.interest())
+    def choose_child(node: Aux_MCTS.Node,exploration) -> Aux_MCTS.Node:
+        return max(node.subs, key=lambda x: x.interest(exploration))
 
     @staticmethod
     def expand(node: Aux_MCTS.Node, prior_moves, game: Game):

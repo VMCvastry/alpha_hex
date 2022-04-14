@@ -6,7 +6,7 @@ from trainer import Trainer
 from collections import Counter
 from variables import *
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 
 
 def turn(game, move):
@@ -20,12 +20,12 @@ def turn(game, move):
 def duel(trainer1: Trainer, trainer2: Trainer):
     game = Game()
     while 1:
-        player = MCTS(trainer1, game.get_state(), game.player)
+        player = MCTS(trainer1, game.get_state(), game.player,exploration=1.4)
         move, _ = player.search()
         res = turn(game, move)
         if res is not None:
             return res
-        player = MCTS(trainer2, game.get_state(), game.player)
+        player = MCTS(trainer2, game.get_state(), game.player,exploration=1.4)
         move, _ = player.search()
         res = turn(game, move)
         if res is not None:
@@ -42,11 +42,11 @@ def find_best(model_1, model_2):
     for _ in range(N_GAMES_DUEL // 2):
         res.append(-1 * duel(trainer2, trainer1))
     c = Counter(res)
-    print(res)
+    print(c)
     return c
 
 
 if __name__ == "__main__":
-    model_1 = "NET_2022-04-13_21-44-45"
-    model_2 = "NET_2022-04-14_09-29-42"
+    model_1 = "NET_2022-04-14_09-29-42"
+    model_2 = "NET_2022-04-14_14-11-48"
     print(find_best(model_1, model_2))
