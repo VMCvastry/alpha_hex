@@ -13,6 +13,7 @@ def turn(game, move):
     game.set_mark(move)
     if game.check_tic_tac_toe() is not None:
         logging.info("{} wins!".format(game.check_tic_tac_toe()))
+        logging.info(game)
     return game.check_tic_tac_toe()
 
 
@@ -44,6 +45,6 @@ def find_best(trainer1: Trainer, trainer2: Trainer):
 
 
 if __name__ == "__main__":
-    trainer1 = Trainer(model_name="NET_2022-04-12_21-27-23")
-    trainer2 = Trainer(model_name="NET_2022-04-12_01-32-12")
+    trainer1 = Trainer(model_name="NET_2022-04-14_09-29-42")
+    trainer2 = Trainer(model_name="NET_2022-04-13_21-44-45")
     print(find_best(trainer1, trainer2))
