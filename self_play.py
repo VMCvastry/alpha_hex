@@ -14,7 +14,7 @@ import threading
 
 # logging.basicConfig(level=logging.INFO)
 
-
+# todo rotation and reflection
 class PlayGame:
     def __init__(self, trainer):
         self.game: Game = Game()

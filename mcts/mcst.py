@@ -6,12 +6,16 @@ from collections import Counter
 from game import Game
 from .mcst_aux import Aux_MCTS
 from variables import *
+
 SIMULATIONS_CAP = 50
 TIME_CAP = 100000000000
 
+# todo question page 26 alpha go zero
+
 
 class MCTS:
-    def __init__(self, network, init_state, player,exploration=None):
+    def __init__(self, network, init_state, player, exploration=None):
+        # todo temperature ->0
         self.network = network
         self.player = player
         self.graph: Aux_MCTS.Node = Aux_MCTS.Node(
@@ -20,11 +24,12 @@ class MCTS:
             parent=None,
             move=None,
         )
+        # todo dirichlet noise on first move
         self.total_simulations = 0
         self.start_time = time.time()
         if exploration is None:
-            exploration=EXPLORATION_PARAMETER
-        self.exploration=exploration
+            exploration = EXPLORATION_PARAMETER
+        self.exploration = exploration
 
     def search(self) -> tuple[Game.Move, list[list]]:
         while (
@@ -33,7 +38,7 @@ class MCTS:
         ):
             self.step()
             # print(Aux_MCTS.pick_best_move(self.graph))
-        move = Aux_MCTS.pick_best_move(self.graph)
+        move = Aux_MCTS.pick_best_move(self.graph, TEMPERATURE)
         move.mark = self.player
         return move, Aux_MCTS.get_policy(self.graph)
 
@@ -45,7 +50,7 @@ class MCTS:
                 next_node.visits < 1 or not next_node.subs
             ):  # todo check "or not next_node.subs"
                 break
-            next_node = Aux_MCTS.choose_child(next_node,self.exploration)
+            next_node = Aux_MCTS.choose_child(next_node, self.exploration)
         outcome = self.simulate(next_node)
         Aux_MCTS.backprop(next_node, outcome)
 

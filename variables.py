@@ -12,5 +12,6 @@ N_GAMES = 500
 N_GAMES_DUEL = 20
 
 LEARNING_RATE = 1e-3
-WEIGHT_DECAY = 1e-6
-dropout = 0.2
+MOMENTUM = 0.9
+# WEIGHT_DECAY = 1e-6
+# dropout = 0.2

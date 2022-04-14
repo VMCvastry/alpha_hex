@@ -49,8 +49,8 @@ class Trainer:
             loss_fn = crap_loss
         self.loss_fn = loss_fn
         if not optimizer:
-            optimizer = optim.Adam(
-                model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY
+            optimizer = optim.SGD(
+                model.parameters(), momentum=MOMENTUM, lr=LEARNING_RATE
             )
         self.optimizer = optimizer
         self.train_losses = []

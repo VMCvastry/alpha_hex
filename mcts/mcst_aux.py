@@ -46,7 +46,7 @@ class Aux_MCTS:
             subs = self.parent.subs
             return sum((s.visits for s in subs))
 
-        def interest(self,exploration):
+        def interest(self, exploration):
             return self.get_mean_value() + exploration * (
                 self.prior * np.sqrt(self.layer_visits()) / (self.visits + 1)
             )
@@ -59,9 +59,13 @@ class Aux_MCTS:
         return [[player * s for s in row] for row in state]
 
     @staticmethod
-    def pick_best_move(node: Aux_MCTS.Node):
+    def pick_best_move(node: Aux_MCTS.Node, temperature):
         logging.info([str(n) for n in node.subs])
-        best_node = max(node.subs, key=lambda x: x.visits)
+        # denominator = node.layer_visits() ** (1 / temperature)
+        best_node = max(node.subs, key=lambda x: x.visits)  # todo set real formula
+        # best_node = max(
+        #     node.subs, key=lambda x: (x.visits ** (1 / temperature)) / denominator
+        # )
         return best_node.move
 
     @staticmethod
@@ -72,7 +76,7 @@ class Aux_MCTS:
         return grid
 
     @staticmethod
-    def choose_child(node: Aux_MCTS.Node,exploration) -> Aux_MCTS.Node:
+    def choose_child(node: Aux_MCTS.Node, exploration) -> Aux_MCTS.Node:
         return max(node.subs, key=lambda x: x.interest(exploration))
 
     @staticmethod
