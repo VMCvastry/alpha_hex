@@ -25,11 +25,12 @@ def process_state(state, player: int) -> torch.Tensor:
 
 
 def crap_loss(predicted_value, value, predicted_policy, policy):
-    # return (value- predicted_value ) ** 2-
-    # print(predicted_value, value)
-    # print(predicted_policy, policy)
-    return torch.mean((value - predicted_value) ** 2) + torch.mean(
-        (policy - predicted_policy) ** 2
+    return torch.mean((policy - predicted_policy) ** 2)
+
+
+def real_loss(predicted_value, value, predicted_policy, policy):
+    return (value - predicted_value) ** 2 - torch.transpose(policy, 0, 1) @ torch.log(
+        predicted_policy
     )
 
 
@@ -52,7 +53,10 @@ class Trainer:
         self.loss_fn = loss_fn
         if not optimizer:
             optimizer = optim.SGD(
-                model.parameters(), momentum=MOMENTUM, lr=LEARNING_RATE,weight_decay=WEIGHT_DECAY
+                model.parameters(),
+                momentum=MOMENTUM,
+                lr=LEARNING_RATE,
+                weight_decay=WEIGHT_DECAY,
             )
         self.optimizer = optimizer
         self.train_losses = []

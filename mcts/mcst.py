@@ -14,7 +14,7 @@ TIME_CAP = 100000000000
 
 
 class MCTS:
-    def __init__(self, network, init_state, player, exploration=None):
+    def __init__(self, network, init_state, player, exploration=None, temperature=None):
         # todo temperature ->0
         self.network = network
         self.player = player
@@ -29,6 +29,9 @@ class MCTS:
         self.start_time = time.time()
         if exploration is None:
             exploration = EXPLORATION_PARAMETER
+        if temperature is None:
+            temperature = TEMPERATURE
+        self.temperature = temperature
         self.exploration = exploration
 
     def search(self) -> tuple[Game.Move, list[list]]:
@@ -38,7 +41,8 @@ class MCTS:
         ):
             self.step()
             # print(Aux_MCTS.pick_best_move(self.graph))
-        move = Aux_MCTS.pick_best_move(self.graph, TEMPERATURE)
+        Aux_MCTS.normalize_layer(self.graph)
+        move = Aux_MCTS.pick_best_move(self.graph, self.temperature)
         move.mark = self.player
         return move, Aux_MCTS.get_policy(self.graph)
 

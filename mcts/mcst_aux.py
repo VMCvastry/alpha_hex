@@ -13,6 +13,7 @@ def get_move_prior(priors, move: Game.Move):
     return float(priors[move.x][move.y])
 
 
+# todo mcts policy not a prob distirbution
 class Aux_MCTS:
     # exploration_parameter = np.sqrt(2)
 
@@ -32,9 +33,14 @@ class Aux_MCTS:
             self.subs: set[Aux_MCTS.Node] = set()
             self.parent: Aux_MCTS.Node = parent
             self.move = move
+            self.normalized_value = None
 
         def get_mean_value(self):
             return self.value / (self.visits + 0.00001)
+
+        def get_normalized_value(self):
+            assert self.normalized_value is not None
+            return self.normalized_value
 
         def get_next_player(self):
             if not self.move:
@@ -49,10 +55,10 @@ class Aux_MCTS:
         def interest(self, exploration):
             return self.get_mean_value() + exploration * (
                 self.prior * np.sqrt(self.layer_visits()) / (self.visits + 1)
-            )
+            )  # todo why prior
 
         def __repr__(self):
-            return f"{self.move},value {self.value}, visits={round(self.visits)}"
+            return f"{self.move}, mean_value={self.get_mean_value()},value {self.value}, visits={round(self.visits)}, interest={self.interest(100)}"
 
     @staticmethod
     def flip_state(state, player):
@@ -62,17 +68,31 @@ class Aux_MCTS:
     def pick_best_move(node: Aux_MCTS.Node, temperature):
         logging.info([str(n) for n in node.subs])
         # denominator = node.layer_visits() ** (1 / temperature)
-        best_node = max(node.subs, key=lambda x: x.visits)  # todo set real formula
+        # best_node = max(node.subs, key=lambda x: x.visits)  # todo set real formula
         # best_node = max(
         #     node.subs, key=lambda x: (x.visits ** (1 / temperature)) / denominator
         # )
+        if temperature:
+            best_node = random.choices(
+                list(node.subs), weights=[n.get_normalized_value() for n in node.subs]
+            )[0]
+        else:
+            best_node = max(node.subs, key=lambda x: x.get_normalized_value())
         return best_node.move
+
+    @staticmethod
+    def normalize_layer(node: Aux_MCTS.Node):
+        minimum = min(n.get_mean_value() for n in node.subs)
+        print(minimum)
+        total = sum(n.get_mean_value() + abs(minimum) for n in node.subs)
+        for n in node.subs:
+            n.normalized_value = (n.get_mean_value() + abs(minimum)) / total
 
     @staticmethod
     def get_policy(node: Aux_MCTS.Node):
         grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]  # todo set to -1 illegal moves
         for n in node.subs:
-            grid[n.move.x][n.move.y] = n.get_mean_value()
+            grid[n.move.x][n.move.y] = n.get_normalized_value()
         return grid
 
     @staticmethod
