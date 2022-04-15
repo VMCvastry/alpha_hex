@@ -52,7 +52,7 @@ class Trainer:
         self.loss_fn = loss_fn
         if not optimizer:
             optimizer = optim.SGD(
-                model.parameters(), momentum=MOMENTUM, lr=LEARNING_RATE
+                model.parameters(), momentum=MOMENTUM, lr=LEARNING_RATE,weight_decay=WEIGHT_DECAY
             )
         self.optimizer = optimizer
         self.train_losses = []
