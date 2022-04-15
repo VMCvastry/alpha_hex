@@ -19,7 +19,7 @@ class Game:
         return game
 
     def get_state(self):
-        return self.board
+        return copy.deepcopy(self.board)
 
     class Move:
         def __init__(self, x, y, player):

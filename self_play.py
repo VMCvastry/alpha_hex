@@ -12,7 +12,17 @@ from torch import nn, optim
 from torch.utils.data import DataLoader, TensorDataset
 import threading
 
-# logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
+
+
+def rotate_left(board: list[list[int]]):
+    return [list(reversed(row)) for row in zip(*board)]
+    # return torch.cat([board[:,:,1:], board[:,:,:1]], dim=2)
+
+
+def flip_board(board: list[list[int]]):
+    return [list(reversed(row)) for row in board]
+
 
 # todo rotation and reflection
 class PlayGame:
@@ -39,17 +49,40 @@ class PlayGame:
 
     def get_tensors(self):
         states, priors = self.states, self.policies
-        outcomes = (
-            torch.Tensor([self.outcome * self.turn[i] for i in range(len(states))])
-            .unsqueeze(1)
-            .unsqueeze(1)
-            .unsqueeze(1)
-        )
+        full_states, full_outcomes, full_priors = [], [], []
+        full_turns = []
+        for i in range(len(states)):
+            cur_state, cur_policy = states[i], priors[i]
+            full_turns.append(self.turn[i])
+            full_states.append(cur_state)
+            full_priors.append(cur_policy)
+            for j in range(3):
+                cur_state = rotate_left(cur_state)
+                cur_policy = rotate_left(cur_policy)
+                full_states.append(cur_state)
+                full_priors.append(cur_policy)
+                full_turns.append(self.turn[i])
+            cur_state, cur_policy = flip_board(states[i]), flip_board(priors[i])
+            full_turns.append(self.turn[i])
+            full_states.append(cur_state)
+            full_priors.append(cur_policy)
+            for j in range(3):
+                cur_state = rotate_left(cur_state)
+                cur_policy = rotate_left(cur_policy)
+                full_states.append(cur_state)
+                full_priors.append(cur_policy)
+                full_turns.append(self.turn[i])
+        full_outcomes = [self.outcome * full_turns[i] for i in range(len(full_states))]
+
+        outcomes = torch.Tensor(full_outcomes).unsqueeze(1).unsqueeze(1).unsqueeze(1)
         states = torch.tensor(
-            [split_board(states[i], self.turn[i]) for i in range(len(states))],
+            [
+                split_board(full_states[i], full_turns[i])
+                for i in range(len(full_states))
+            ],
             dtype=torch.float32,
         )
-        priors = torch.tensor(priors)
+        priors = torch.tensor(full_priors)
         return states, outcomes, priors
 
 

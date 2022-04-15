@@ -6,7 +6,7 @@ from duel import find_best
 model_name = "NET_2022-04-14_09-29-42"
 model_name = "NET_2022-04-15_09-24-41"
 gen = 21
-total_cycles=gen
+total_cycles = gen
 while 1:
     print(f"GEN: {gen}, model: {model_name}, total:{total_cycles}")
     run_self_play(f"gen{gen}", model_name)
@@ -18,4 +18,4 @@ while 1:
         gen += 1
     else:
         print("No improvement")
-    total_cycles+=1
+    total_cycles += 1
