@@ -36,17 +36,19 @@ def find_best(model_1, model_2):
     trainer1 = Trainer(model_name=model_1)
     trainer2 = Trainer(model_name=model_2)
     res = []
-    for _ in range(N_GAMES_DUEL // 2):
-        res.append(duel(trainer1, trainer2))
-
-    for _ in range(N_GAMES_DUEL // 2):
-        res.append(-1 * duel(trainer2, trainer1))
+    for i in range(N_GAMES_DUEL):
+        print(f"\rDuel {i}/{N_GAMES_DUEL}", end=" ")
+        if i<N_GAMES_DUEL // 2:
+            res.append(duel(trainer1, trainer2))
+        else:
+            res.append(-1 * duel(trainer2, trainer1))
     c = Counter(res)
+    print(res)
     print(c)
     return c
 
 
 if __name__ == "__main__":
-    model_1 = "NET_2022-04-14_09-29-42"
-    model_2 = "NET_2022-04-14_14-11-48"
+    model_1 = "NET_2022-04-15_01-37-15"
+    model_2 = "NET_2022-04-15_09-24-41"
     print(find_best(model_1, model_2))

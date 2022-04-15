@@ -7,7 +7,7 @@ from game import Game
 from .mcst_aux import Aux_MCTS
 from variables import *
 
-SIMULATIONS_CAP = 50
+SIMULATIONS_CAP = 100
 TIME_CAP = 100000000000
 
 # todo question page 26 alpha go zero

@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 import torch
 from datetime import datetime
@@ -106,7 +108,7 @@ class Trainer:
             validation_loss = -1
             if (epoch <= 10) | (epoch % 50 == 0) | (epoch == n_epochs):
                 print(
-                    f"[{epoch}/{n_epochs}] Training loss: {training_loss:.4f}\t Validation loss: {validation_loss:.4f}"
+                    f"[{epoch}/{n_epochs}] Training loss: {training_loss:.4f}\t Validation loss: {validation_loss:.4f},{datetime.now()}"
                 )
 
         torch.save(self.model.state_dict(), f"models/{model_name}.pt")
