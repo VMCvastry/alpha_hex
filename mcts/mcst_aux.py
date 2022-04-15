@@ -83,7 +83,6 @@ class Aux_MCTS:
     @staticmethod
     def normalize_layer(node: Aux_MCTS.Node):
         minimum = min(n.get_mean_value() for n in node.subs)
-        print(minimum)
         total = sum(n.get_mean_value() + abs(minimum) for n in node.subs)
         for n in node.subs:
             n.normalized_value = (n.get_mean_value() + abs(minimum)) / total
