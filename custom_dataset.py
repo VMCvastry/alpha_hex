@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import torch
 from torch.utils.data import Dataset
 from pathlib import Path
@@ -19,6 +21,12 @@ class CustomDataset(Dataset):
         self.states = torch.cat((self.states, states), dim=0)
         self.values = torch.cat((self.values, values), dim=0)
         self.policies = torch.cat((self.policies, policies), dim=0)
+        assert self.states.size()[0] == self.values.size()[0] == self.policies.size()[0]
+
+    def append_dataset(self, dataset: CustomDataset):
+        self.states = torch.cat((self.states, dataset.states), dim=0)
+        self.values = torch.cat((self.values, dataset.values), dim=0)
+        self.policies = torch.cat((self.policies, dataset.policies), dim=0)
         assert self.states.size()[0] == self.values.size()[0] == self.policies.size()[0]
 
     def __getitem__(self, idx):
