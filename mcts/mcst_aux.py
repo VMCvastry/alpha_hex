@@ -85,7 +85,11 @@ class Aux_MCTS:
         minimum = min(n.get_mean_value() for n in node.subs)
         total = sum(n.get_mean_value() + abs(minimum) for n in node.subs)
         for n in node.subs:
-            n.normalized_value = (n.get_mean_value() + abs(minimum)) / total
+            if not total:
+                logging.critical("ERRORE CHE NON DOVREBBE ESSERE POSSIBILE")
+                n.normalized_value =1/(len(node.subs))
+            else:
+                n.normalized_value = ((n.get_mean_value() + abs(minimum)) / total)
 
     @staticmethod
     def get_policy(node: Aux_MCTS.Node):
