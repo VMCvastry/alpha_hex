@@ -29,9 +29,15 @@ def crap_loss(predicted_value, value, predicted_policy, policy):
 
 
 def real_loss(predicted_value, value, predicted_policy, policy):
-    return (value - predicted_value) ** 2 - torch.transpose(policy, 0, 1) @ torch.log(
-        predicted_policy
+    policy_vector = policy.reshape((-1, 9))  # grid to vector
+    predicted_policy_vector = predicted_policy.reshape((-1, 9))
+    return torch.mean(
+        (value - predicted_value) ** 2
+        - torch.sum(policy_vector * torch.log(predicted_policy_vector), 1)
     )
+    # return (value - predicted_value) ** 2 - torch.einsum(
+    #     "i, i -> ", policy, torch.log(predicted_policy)
+    # )
 
 
 class Trainer:
@@ -49,7 +55,7 @@ class Trainer:
         self.model = model
         if not loss_fn:
             # loss_fn = nn.MSELoss(reduction="mean")
-            loss_fn = crap_loss
+            loss_fn = real_loss
         self.loss_fn = loss_fn
         if not optimizer:
             optimizer = optim.SGD(
