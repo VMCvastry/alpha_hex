@@ -20,7 +20,7 @@ class PolicyHead(nn.Module):
     ) -> torch.Tensor:
         x = self.conv(x)
         s = self.batch_norm(x)
-        x = F.relu(x)
+        x = F.relu(s)
         x = x.reshape((-1, 18))  # double grid to vector
         x = self.fcl(x)
         x = F.softmax(x, dim=1)  # to get probability distribution

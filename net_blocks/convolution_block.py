@@ -26,5 +26,5 @@ class Convolution(nn.Module):
         """
         x = self.input_conv(x)
         s = self.batch_norm(x)
-        x = F.relu(x)
+        x = F.relu(s)
         return x

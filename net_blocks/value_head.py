@@ -18,7 +18,7 @@ class ValueHead(nn.Module):
     ) -> torch.Tensor:
         x = self.conv(x)
         s = self.batch_norm(x)
-        x = F.relu(x)
+        x = F.relu(s)
         x = x.reshape((-1, 9))  # grid to vector
         x = self.fcl1(x)
         x = F.relu(x)
