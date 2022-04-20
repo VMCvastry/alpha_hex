@@ -99,6 +99,7 @@ class Trainer:
             batch_losses = []
             for x_batch, value_batch, policy_batch in train_loader:
                 # x_batch = x_batch.view([batch_size, -1, n_features]).to(self.device)
+                x_batch = x_batch.to(self.device)
                 value_batch = value_batch.to(self.device)
                 policy_batch = policy_batch.to(self.device)
                 loss = self.train_step(x_batch, value_batch, policy_batch)
