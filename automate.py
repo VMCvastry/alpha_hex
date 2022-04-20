@@ -11,7 +11,7 @@ gen = 21
 
 if len(sys.argv) > 1:
     model_name = sys.argv[1]
-    gen = sys.argv[2]
+    gen = int(sys.argv[2])
 print(f"model_name: {model_name}", gen)
 total_cycles = gen
 datasets = [f"gen{gen}"]
