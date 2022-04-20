@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 N_EPOCHS = 100
 BATCH_SIZE = 16
 HIDDEN_FEATURES = 64

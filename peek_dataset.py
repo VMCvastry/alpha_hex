@@ -1,3 +1,4 @@
+from __future__ import annotations
 import torch
 
 from torch.utils.data import DataLoader
@@ -9,7 +10,7 @@ import random
 # random.shuffle(a)
 s = []
 
-test_loader_one = CustomDataset.load("./training_data", "gen1")
+test_loader_one = CustomDataset.load("./training_data", "gen23")
 test_loader_one = DataLoader(test_loader_one, batch_size=1, shuffle=True)
 for samples, targets1, targets2 in test_loader_one:
     # print(samples.size())

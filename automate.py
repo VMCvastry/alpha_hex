@@ -1,3 +1,4 @@
+from __future__ import annotations
 from train_net import train_net
 from self_play import run_self_play
 from duel import find_best
