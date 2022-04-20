@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 from concurrent.futures import ThreadPoolExecutor
 
@@ -12,7 +13,7 @@ from torch import nn, optim
 from torch.utils.data import DataLoader, TensorDataset
 import threading
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 
 
 def rotate_left(board: list[list[int]]):

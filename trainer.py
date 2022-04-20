@@ -1,3 +1,4 @@
+from __future__ import annotations
 import time
 
 import numpy as np
@@ -45,6 +46,7 @@ class Trainer:
         self, *args, model_name=None, model=None, loss_fn=None, optimizer=None
     ):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print(f"Using device: {self.device}")
         if not model:
             model = NET(2, HIDDEN_FEATURES, RESNET_DEPTH, VALUE_HEAD_SIZE).to(
                 self.device
