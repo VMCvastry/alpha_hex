@@ -7,7 +7,7 @@ from trainer import Trainer
 from collections import Counter
 from variables import *
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 
 
 def turn(game, move):

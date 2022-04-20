@@ -160,7 +160,9 @@ class Trainer:
 
     def poll(self, data, player):
         processed_data = process_state(data, player)
-        processed_data = processed_data.unsqueeze(0)  # add batch dimension
+        processed_data = processed_data.unsqueeze(0).to(
+            self.device
+        )  # add batch dimension
         with torch.no_grad():
             self.model.eval()  # todo check
             policy, value = self.model(processed_data)
