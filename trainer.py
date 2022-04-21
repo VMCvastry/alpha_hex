@@ -32,10 +32,21 @@ def crap_loss(predicted_value, value, predicted_policy, policy):
 def real_loss(predicted_value, value, predicted_policy, policy):
     policy_vector = policy.reshape((-1, 9))  # grid to vector
     predicted_policy_vector = predicted_policy.reshape((-1, 9))
-    return torch.mean(
-        (value - predicted_value) ** 2
-        - torch.sum(policy_vector * torch.log(predicted_policy_vector), 1)
+    value_loss = torch.mean((value - predicted_value) ** 2)
+    policy_loss = torch.mean(
+        -torch.sum(policy_vector * torch.log(predicted_policy_vector), 1)
     )
+    # todo mean separately or all together?
+    return (
+        value_loss + policy_loss,
+        value_loss.detach(),
+        policy_loss.detach(),
+    )  # todo check if not messing with grad
+
+    #    return  torch.mean(
+    #     (value - predicted_value) ** 2
+    #     - torch.sum(policy_vector * torch.log(predicted_policy_vector), 1)
+    # )
     # return (value - predicted_value) ** 2 - torch.einsum(
     #     "i, i -> ", policy, torch.log(predicted_policy)
     # )
@@ -83,28 +94,37 @@ class Trainer:
         # # Computes gradients
         # value_loss.backward()
         # policy_loss.backward()
-        loss = self.loss_fn(predicted_value, value, predicted_policy, policy)
+        loss, value_loss, policy_loss = self.loss_fn(
+            predicted_value, value, predicted_policy, policy
+        )
         loss.backward()
         # Updates parameters and zeroes gradients
         self.optimizer.step()
         self.optimizer.zero_grad()
-
         # Returns the loss
-        return loss.item()
+        return loss.item(), value_loss.item(), policy_loss.item()
 
     def train(self, train_loader, val_loader, batch_size=64, n_epochs=50, n_features=1):
         model_name = f'{type(self.model).__name__}_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
 
         for epoch in range(1, n_epochs + 1):
             batch_losses = []
+            val_batch_losses = []
+            pol_batch_losses = []
             for x_batch, value_batch, policy_batch in train_loader:
                 # x_batch = x_batch.view([batch_size, -1, n_features]).to(self.device)
                 x_batch = x_batch.to(self.device)
                 value_batch = value_batch.to(self.device)
                 policy_batch = policy_batch.to(self.device)
-                loss = self.train_step(x_batch, value_batch, policy_batch)
+                loss, value_loss, policy_loss = self.train_step(
+                    x_batch, value_batch, policy_batch
+                )
                 batch_losses.append(loss)
+                val_batch_losses.append(value_loss)
+                pol_batch_losses.append(policy_loss)
             training_loss = np.mean(batch_losses)
+            val_loss = np.mean(val_batch_losses)
+            pol_loss = np.mean(pol_batch_losses)
             self.train_losses.append(training_loss)
 
             # with torch.no_grad():
@@ -121,7 +141,7 @@ class Trainer:
             validation_loss = -1
             if (epoch <= 10) | (epoch % 50 == 0) | (epoch == n_epochs):
                 print(
-                    f"[{epoch}/{n_epochs}] Training loss: {training_loss:.4f}\t Validation loss: {validation_loss:.4f},{datetime.now()}"
+                    f"[{epoch}/{n_epochs}] Training loss: {training_loss:.4f}\tValue loss: {val_loss:.4f}\tPolicy loss: {pol_loss:.4f}\t Validation loss: {validation_loss:.4f},{datetime.now()}"
                 )
 
         torch.save(self.model.state_dict(), f"models/{model_name}.pt")
