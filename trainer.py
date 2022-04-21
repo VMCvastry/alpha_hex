@@ -99,6 +99,7 @@ class Trainer:
             batch_losses = []
             for x_batch, value_batch, policy_batch in train_loader:
                 # x_batch = x_batch.view([batch_size, -1, n_features]).to(self.device)
+                x_batch = x_batch.to(self.device)
                 value_batch = value_batch.to(self.device)
                 policy_batch = policy_batch.to(self.device)
                 loss = self.train_step(x_batch, value_batch, policy_batch)
@@ -160,7 +161,9 @@ class Trainer:
 
     def poll(self, data, player):
         processed_data = process_state(data, player)
-        processed_data = processed_data.unsqueeze(0)  # add batch dimension
+        processed_data = processed_data.unsqueeze(0).to(
+            self.device
+        )  # add batch dimension
         with torch.no_grad():
             self.model.eval()  # todo check
             policy, value = self.model(processed_data)
