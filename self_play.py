@@ -1,5 +1,5 @@
 from __future__ import annotations
-import logging
+from logger import logging
 from concurrent.futures import ThreadPoolExecutor
 
 from custom_dataset import CustomDataset
@@ -13,8 +13,6 @@ from torch import nn, optim
 from torch.utils.data import DataLoader, TensorDataset
 import threading
 
-# logging.basicConfig(level=logging.INFO)
-
 
 def rotate_left(board: list[list[int]]):
     return [list(reversed(row)) for row in zip(*board)]
@@ -25,7 +23,6 @@ def flip_board(board: list[list[int]]):
     return [list(reversed(row)) for row in board]
 
 
-# todo rotation and reflection
 class PlayGame:
     def __init__(self, trainer):
         self.game: Game = Game()
@@ -44,7 +41,8 @@ class PlayGame:
             self.turn.append(self.game.player)
             self.game.set_mark(move)
             if self.game.check_tic_tac_toe() is not None:
-                logging.info("{} wins!".format(self.game.check_tic_tac_toe()))
+                logging.debug("{} wins!".format(self.game.check_tic_tac_toe()))
+                logging.debug(self.game)
                 self.outcome = self.game.check_tic_tac_toe()
                 return self.outcome
 
@@ -115,14 +113,15 @@ def run_self_play(data_path, model_path):
             [n_game] * N_GAMES,
             [lock] * N_GAMES,
         )
-    print(results)
+    for result in results:
+        pass  # required otherwise the interpreter wont execute them
     for i in range(len(data)):
         if i == 0:
             data_set = CustomDataset(data[i][0], data[i][1], data[i][2])
         else:
             data_set.append(data[i][0], data[i][1], data[i][2])
     logging.warning("Finished self play")
-    print(data_set.__len__())
+    logging.info(f"dataset size: {data_set.__len__()}")
     data_set.store("./training_data", data_path)
 
 

@@ -1,6 +1,5 @@
 from __future__ import annotations
-import logging
-
+from logger import logging
 from custom_dataset import CustomDataset
 from mcts.mcst import MCTS
 from game import Game

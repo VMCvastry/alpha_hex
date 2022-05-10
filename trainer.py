@@ -9,6 +9,7 @@ from matplotlib import pyplot as plt
 
 from net import NET
 from variables import *
+from logger import logging
 
 
 def split_board(state, player):  # todo when to switch?
@@ -57,7 +58,7 @@ class Trainer:
         self, *args, model_name=None, model=None, loss_fn=None, optimizer=None
     ):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        print(f"Using device: {self.device}")
+        logging.info(f"Using device: {self.device}")
         if not model:
             model = NET(2, HIDDEN_FEATURES, RESNET_DEPTH, VALUE_HEAD_SIZE).to(
                 self.device
@@ -140,7 +141,7 @@ class Trainer:
             #     self.val_losses.append(validation_loss)
             validation_loss = -1
             if (epoch <= 10) | (epoch % 50 == 0) | (epoch == n_epochs):
-                print(
+                logging.info(
                     f"[{epoch}/{n_epochs}] Training loss: {training_loss:.4f}\tValue loss: {val_loss:.4f}\tPolicy loss: {pol_loss:.4f}\t Validation loss: {validation_loss:.4f},{datetime.now()}"
                 )
 

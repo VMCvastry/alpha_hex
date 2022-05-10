@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import logging
+from logger import logging
 import random
 import numpy as np
 from game import Game
@@ -66,7 +66,7 @@ class Aux_MCTS:
 
     @staticmethod
     def pick_best_move(node: Aux_MCTS.Node, temperature):
-        logging.info([str(n) for n in node.subs])
+        logging.debug(f"possible MCTS moves {[str(n) for n in node.subs]}")
         # denominator = node.layer_visits() ** (1 / temperature)
         # best_node = max(node.subs, key=lambda x: x.visits)  # todo set real formula
         # best_node = max(
