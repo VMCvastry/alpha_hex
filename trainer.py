@@ -33,7 +33,7 @@ def crap_loss(predicted_value, value, predicted_policy, policy):
 def real_loss(predicted_value, value, predicted_policy, policy):
     policy_vector = policy.reshape((-1, 9))  # grid to vector
     predicted_policy_vector = predicted_policy.reshape((-1, 9))
-    value_loss = torch.mean((value - predicted_value) ** 2)
+    value_loss = 2*torch.mean((value - predicted_value) ** 2)
     policy_loss = torch.mean(
         -torch.sum(policy_vector * torch.log(predicted_policy_vector), 1)
     )
@@ -88,7 +88,6 @@ class Trainer:
 
         # Makes predictions
         predicted_policy, predicted_value = self.model(state)
-
         # # Computes loss
         # value_loss = self.loss_fn(value, predicted_value)
         # policy_loss = self.loss_fn(policy, predicted_policy)
