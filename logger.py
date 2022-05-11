@@ -1,16 +1,16 @@
+from variables import DEBUG
 import logging, logging.config
-
 import coloredlogs
 
 config = {
     "version": 1,
     "formatters": {
         "light": {
-            "format": u"%(asctime)s %(levelname)-8s: \n\t %(message)s",
+            "format": "%(asctime)s %(levelname)-8s: \n\t %(message)s",
             "datefmt": "%H:%M:%S",
         },
         "detailed": {
-            "format": u"%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d —\n\t %(message)s",
+            "format": "%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d —\n\t %(message)s",
             "datefmt": "%m-%d %H:%M:%S",
         },
     },
@@ -18,7 +18,7 @@ config = {
         "console": {
             "class": "logging.StreamHandler",
             "formatter": "light",
-            "level": "INFO",
+            "level": f"{'DEBUG' if DEBUG else 'INFO'}",
         },
         "log": {
             "class": "logging.handlers.RotatingFileHandler",
@@ -33,6 +33,10 @@ config = {
     "root": {"handlers": ["console", "log"], "level": "DEBUG"},
 }
 
+# if DEBUG:
+#     coloredlogs.install(level="DEBUG")
+# else:
+#     coloredlogs.install(level="INFO")
 
-coloredlogs.install(level="INFO")
+
 logging.config.dictConfig(config)

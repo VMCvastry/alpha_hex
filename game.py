@@ -35,7 +35,7 @@ class Game:
         self.board[move.x][move.y] = move.mark
         winner = self.check_tic_tac_toe()
         if winner is not None:
-            logging.debug("{} wins!".format(winner))
+            # logging.debug("{} wins!".format(winner))
             return winner
         self.player = -1 * self.player
 

@@ -38,7 +38,7 @@ class Aux_MCTS:
         def get_mean_value(self):
             return self.value / (self.visits + 0.00001)
 
-        def get_normalized_value(self):
+        def get_normalized_worth(self):
             assert self.normalized_value is not None
             return self.normalized_value
 
@@ -50,7 +50,7 @@ class Aux_MCTS:
 
         def layer_visits(self):
             subs = self.parent.subs
-            return sum((s.visits for s in subs))
+            return sum(s.visits for s in subs)
 
         def interest(self, exploration):
             return self.get_mean_value() + exploration * (
@@ -66,7 +66,10 @@ class Aux_MCTS:
 
     @staticmethod
     def pick_best_move(node: Aux_MCTS.Node, temperature):
-        logging.debug(f"possible MCTS moves {[str(n) for n in node.subs]}")
+        logging.debug("possible MCTS moves \n" + "\n".join([str(n) for n in node.subs]))
+        # logging.debug(
+        #     f"possible MCTS moves {[n.get_normalized_value() for n in node.subs]}"
+        # )
         # denominator = node.layer_visits() ** (1 / temperature)
         # best_node = max(node.subs, key=lambda x: x.visits)  # todo set real formula
         # best_node = max(
@@ -74,27 +77,43 @@ class Aux_MCTS:
         # )
         if temperature:
             best_node = random.choices(
-                list(node.subs), weights=[n.get_normalized_value() for n in node.subs]
+                list(node.subs), weights=[n.get_normalized_worth() for n in node.subs]
             )[0]
         else:
-            best_node = max(node.subs, key=lambda x: x.get_normalized_value())
+            best_node = max(node.subs, key=lambda x: x.get_normalized_worth())
         return best_node.move
 
     @staticmethod
     def normalize_layer(node: Aux_MCTS.Node):
-        minimum = min(n.get_mean_value() for n in node.subs)
-        total = sum(n.get_mean_value() + abs(minimum) for n in node.subs)
+        # minimum = min(n.get_mean_value() for n in node.subs)
+        # total = sum(n.get_mean_value() + abs(minimum) for n in node.subs)
+        # for n in node.subs:
+        #     if not total:  # only losing moves
+        #         logging.debug("here checlk")
+        #         n.normalized_value = 1 / (len(node.subs))
+        #     else:
+        #         n.normalized_value = (n.get_mean_value() + abs(minimum)) / total
+        # logging.debug(f"moves {[str(n.move) for n in node.subs]}")
+        # logging.debug(f"mean {[n.get_normalized_value() for n in node.subs]}")
+        # minimum = min(n.value for n in node.subs)
+        # total = sum(n.value + abs(minimum) for n in node.subs)
+        # for n in node.subs:
+        #     if not total:  # only losing moves
+        #         logging.debug("here checlk")
+        #         n.normalized_value = 1 / (len(node.subs))
+        #     else:
+        #         n.normalized_value = (n.value + abs(minimum)) / total
+        # logging.debug(f"total {[n.get_normalized_value() for n in node.subs]}")
+        total = sum(n.visits for n in node.subs)
         for n in node.subs:
-            if not total:  # only losing moves
-                n.normalized_value = 1 / (len(node.subs))
-            else:
-                n.normalized_value = (n.get_mean_value() + abs(minimum)) / total
+            n.normalized_value = n.visits / total
+        # logging.debug(f"visits {[n.get_normalized_value() for n in node.subs]}")
 
     @staticmethod
     def get_policy(node: Aux_MCTS.Node):
         grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]  # todo set to -1 illegal moves
         for n in node.subs:
-            grid[n.move.x][n.move.y] = n.get_normalized_value()
+            grid[n.move.x][n.move.y] = n.get_normalized_worth()
         return grid
 
     @staticmethod
