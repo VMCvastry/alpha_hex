@@ -14,17 +14,23 @@ if len(sys.argv) > 1:
     gen = int(sys.argv[2])
 print(f"model_name: {model_name}", gen)
 total_cycles = gen
-datasets = [f"gen{gen}"]
+datasets = ["gen8","gen23"]
+# datasets = ["gen8","gen23",f"new_gen{gen}"]
+temp=0
 while 1:
-    print(f"GEN: {gen}, model: {model_name}, total:{total_cycles}")
-    run_self_play(f"gen{gen}", model_name)
-    new_model_name = train_net(datasets[-5:], model_name)
+    logging.info(f"GEN: {gen}, model: {model_name}, total:{total_cycles}")
+    if not temp:
+        run_self_play(f"FIXED_{gen}", model_name)
+    datasets=datasets[-5:]
+    new_model_name = train_net(datasets, model_name)
 
     res = find_best(new_model_name, model_name)
-    if res[1] >= res[-1]:
+    if res[1] > res[-1]:
         model_name = new_model_name
         gen += 1
-        datasets.append(f"gen{gen}")
+        if not temp:
+            datasets.append(f"FIXED_{gen}")
     else:
-        print("No improvement")
+        logging.info("No improvement")
     total_cycles += 1
+    temp=0
