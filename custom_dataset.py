@@ -4,6 +4,7 @@ import torch
 from torch.utils.data import Dataset
 from pathlib import Path
 import dill
+from logger import logging
 
 
 class CustomDataset(Dataset):
@@ -23,7 +24,23 @@ class CustomDataset(Dataset):
         self.policies = torch.cat((self.policies, policies), dim=0)
         assert self.states.size()[0] == self.values.size()[0] == self.policies.size()[0]
 
-    def append_dataset(self, dataset: CustomDataset):
+    def remove_duplicates(self):
+        _, indexes = torch.unique(self.states, dim=0, return_inverse=True)
+        new_states = torch.zeros(_.size()[0], 2, 3, 3)
+        new_values = torch.zeros(_.size()[0], 1, 1, 1)
+        new_policies = torch.zeros(_.size()[0], 3, 3)
+        for i, index in enumerate(indexes):
+            new_states[index] = self.states[i]
+            new_values[index] = self.values[i]
+            new_policies[index] = self.policies[i]
+        logging.info(
+            f"removed duplicate states, prev:{self.states.size()[0]}, now: {new_states.size()[0]}"
+        )
+        self.states, self.values, self.policies = new_states, new_values, new_policies
+
+    def append_dataset(
+        self, dataset: CustomDataset
+    ):  # todo remove duplicates also here
         self.states = torch.cat((self.states, dataset.states), dim=0)
         self.values = torch.cat((self.values, dataset.values), dim=0)
         self.policies = torch.cat((self.policies, dataset.policies), dim=0)
@@ -42,6 +59,7 @@ class CustomDataset(Dataset):
         )
 
     def store(self, path, name):
+        self.remove_duplicates()
         torch.save(self.states, f"{path}/{name}_states.pkl", pickle_module=dill)
         torch.save(self.values, f"{path}/{name}_values.pkl", pickle_module=dill)
         torch.save(self.policies, f"{path}/{name}_policies.pkl", pickle_module=dill)
