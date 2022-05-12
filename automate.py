@@ -32,5 +32,6 @@ while 1:
             datasets.append(f"FIXED_{gen}")
     else:
         logging.info("No improvement")
+        #todo delete old
     total_cycles += 1
     temp=0
