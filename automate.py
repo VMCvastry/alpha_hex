@@ -65,9 +65,9 @@ while 1:
     res = find_best(new_model_name, model_name)
     if res[1] > res[-1]:
         model_name = new_model_name
+        save_colab(COLAB)
         gen += 1
         datasets.append(f"FIXED_{gen}")
-        save_colab(COLAB)
     else:
         logging.info("No improvement")
         if os.path.exists(f"models/{new_model_name}.pt"):
