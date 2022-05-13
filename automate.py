@@ -16,19 +16,19 @@ import os
 def save_colab(on_colab: bool):
     if on_colab:
         os.popen(
-            f"!cp -r './models/{model_name}.pt' '/content/gdrive/My Drive/TRIS/models'"
+            f"cp -r './models/{model_name}.pt' '/content/gdrive/My Drive/TRIS/models'"
         )
         os.popen(
-            f"!cp -r './training_data/{datasets[-1]}_policies.pkl' '/content/gdrive/My Drive/TRIS/training_data'"
+            f"cp -r './training_data/{datasets[-1]}_policies.pkl' '/content/gdrive/My Drive/TRIS/training_data'"
         )
         os.popen(
-            f"!cp -r './training_data/{datasets[-1]}_states.pkl' '/content/gdrive/My Drive/TRIS/training_data'"
+            f"cp -r './training_data/{datasets[-1]}_states.pkl' '/content/gdrive/My Drive/TRIS/training_data'"
         )
         os.popen(
-            f"!cp -r './training_data/{datasets[-1]}_values.pkl' '/content/gdrive/My Drive/TRIS/training_data'"
+            f"cp -r './training_data/{datasets[-1]}_values.pkl' '/content/gdrive/My Drive/TRIS/training_data'"
         )
         os.popen(
-            f"!cp -r './logs.log' '/content/gdrive/My Drive/TRIS/logs{datetime.datetime.now()}.log'"
+            f"cp -r './logs.log' '/content/gdrive/My Drive/TRIS/logs{datetime.datetime.now()}.log'"
         )
 
 
@@ -54,6 +54,7 @@ print(f"model_name: {model_name}", gen)
 total_cycles = gen
 datasets = ["gen8", "gen23"]
 datasets = [f"FIXED_{gen}"]
+save_colab(COLAB)
 temp = 1
 while 1:
     logging.info(f"GEN: {gen}, model: {model_name}, total:{total_cycles}")
