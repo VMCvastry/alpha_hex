@@ -1,4 +1,7 @@
 from __future__ import annotations
+
+import datetime
+
 from train_net import train_net
 from self_play import run_self_play
 from duel import find_best
@@ -8,6 +11,25 @@ import os
 
 # fix value
 # speed duel
+
+
+def save_colab(on_colab: bool):
+    if on_colab:
+        os.popen(
+            f"!cp -r './models/{model_name}.pt' '/content/gdrive/My Drive/TRIS/models'"
+        )
+        os.popen(
+            f"!cp -r './training_data/{datasets[-1]}_policies.pkl' '/content/gdrive/My Drive/TRIS/training_data'"
+        )
+        os.popen(
+            f"!cp -r './training_data/{datasets[-1]}_states.pkl' '/content/gdrive/My Drive/TRIS/training_data'"
+        )
+        os.popen(
+            f"!cp -r './training_data/{datasets[-1]}_values.pkl' '/content/gdrive/My Drive/TRIS/training_data'"
+        )
+        os.popen(
+            f"!cp -r './logs.log' '/content/gdrive/My Drive/TRIS/logs{datetime.datetime.now()}.log'"
+        )
 
 
 # model_name = "NET_2022-04-14_09-29-42"
@@ -22,13 +44,15 @@ import os
 # gen = 35
 model_name = "NEW_NET_2022-04-21_09-32-57"
 gen = 53
-
+COLAB = False
 if len(sys.argv) > 1:
-    model_name = sys.argv[1]
-    gen = int(sys.argv[2])
+    COLAB = True
+    if len(sys.argv) > 2:
+        model_name = sys.argv[2]
+        gen = int(sys.argv[3])
 print(f"model_name: {model_name}", gen)
 total_cycles = gen
-# datasets = ["gen8","gen23"]
+datasets = ["gen8", "gen23"]
 datasets = [f"FIXED_{gen}"]
 temp = 1
 while 1:
@@ -43,6 +67,7 @@ while 1:
         model_name = new_model_name
         gen += 1
         datasets.append(f"FIXED_{gen}")
+        save_colab(COLAB)
     else:
         logging.info("No improvement")
         if os.path.exists(f"models/{new_model_name}.pt"):

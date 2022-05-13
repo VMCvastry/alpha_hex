@@ -1,5 +1,6 @@
 from variables import DEBUG
 import logging, logging.config
+
 # import coloredlogs
 
 config = {

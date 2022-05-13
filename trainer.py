@@ -64,7 +64,9 @@ class Trainer:
                 self.device
             )
             if model_name:
-                model.load_state_dict(torch.load(f"models/{model_name}.pt"))
+                model.load_state_dict(
+                    torch.load(f"models/{model_name}.pt", map_location=self.device)
+                )
         self.model = model
         if not loss_fn:
             # loss_fn = nn.MSELoss(reduction="mean")
