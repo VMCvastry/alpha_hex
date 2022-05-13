@@ -54,7 +54,6 @@ print(f"model_name: {model_name}", gen)
 total_cycles = gen
 datasets = ["gen8", "gen23"]
 datasets = [f"FIXED_{gen}"]
-save_colab(COLAB)
 temp = 1
 while 1:
     logging.info(f"GEN: {gen}, model: {model_name}, total:{total_cycles}")
