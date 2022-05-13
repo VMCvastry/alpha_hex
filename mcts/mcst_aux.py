@@ -13,7 +13,6 @@ def get_move_prior(priors, move: Game.Move):
     return float(priors[move.x][move.y])
 
 
-# todo mcts policy not a prob distirbution
 class Aux_MCTS:
     # exploration_parameter = np.sqrt(2)
 

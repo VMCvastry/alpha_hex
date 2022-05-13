@@ -52,7 +52,7 @@ class MCTS:
         while True:
             if (
                 next_node.visits < 1 or not next_node.subs
-            ):  # todo check "or not next_node.subs"
+            ):  # todo check "or not next_node.subs", should be good
                 break
             next_node = Aux_MCTS.choose_child(next_node, self.exploration)
         outcome = self.simulate(next_node)
@@ -61,7 +61,7 @@ class MCTS:
     def simulate(self, node: Aux_MCTS.Node) -> int:
         game = Game(node.state, player=node.get_next_player())
         winner = game.check_tic_tac_toe()
-        if winner is not None:  # todo check
+        if winner is not None:  # todo check, should be good
             return winner
         moves, outcome = self.network.poll(node.state, node.get_next_player())
         Aux_MCTS.expand(node, moves, game)
