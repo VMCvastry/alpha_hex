@@ -65,7 +65,6 @@ class Trainer:
             )
             if model_name:
                 model.load_state_dict(torch.load(f"models/{model_name}.pt"))
-                model.eval()
         self.model = model
         if not loss_fn:
             # loss_fn = nn.MSELoss(reduction="mean")
@@ -185,6 +184,6 @@ class Trainer:
             self.device
         )  # add batch dimension
         with torch.no_grad():
-            self.model.eval()  # todo check
+            self.model.eval()
             policy, value = self.model(processed_data)
         return policy.squeeze(0), value.squeeze(0)  # remove batch dimension
