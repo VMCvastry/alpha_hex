@@ -13,9 +13,9 @@ from variables import *
 
 def turn(game, move):
     game.set_mark(move)
-    logging.info(game)
+    logging.debug(game)
     if game.check_tic_tac_toe() is not None:
-        logging.info("{} wins!".format(game.check_tic_tac_toe()))
+        logging.debug("{} wins!".format(game.check_tic_tac_toe()))
 
     return game.check_tic_tac_toe()
 

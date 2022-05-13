@@ -19,3 +19,5 @@ LEARNING_RATE = 1e-2
 MOMENTUM = 0.9
 WEIGHT_DECAY = 1e-4
 # dropout = 0.2
+
+DEBUG = 0
