@@ -7,29 +7,11 @@ from self_play import run_self_play
 from duel import find_best
 import sys
 from logger import logging
+from drive_explorer import DriveExplorer
 import os
 
 # fix value
 # speed duel
-
-
-def save_colab(on_colab: bool):
-    if on_colab:
-        os.popen(
-            f"cp -r './models/{model_name}.pt' '/content/gdrive/My Drive/TRIS/models'"
-        )
-        os.popen(
-            f"cp -r './training_data/{datasets[-1]}_policies.pkl' '/content/gdrive/My Drive/TRIS/training_data'"
-        )
-        os.popen(
-            f"cp -r './training_data/{datasets[-1]}_states.pkl' '/content/gdrive/My Drive/TRIS/training_data'"
-        )
-        os.popen(
-            f"cp -r './training_data/{datasets[-1]}_values.pkl' '/content/gdrive/My Drive/TRIS/training_data'"
-        )
-        os.popen(
-            f"cp -r './logs.log' '/content/gdrive/My Drive/TRIS/logs{datetime.datetime.now()}.log'"
-        )
 
 
 # model_name = "NET_2022-04-14_09-29-42"
@@ -42,18 +24,27 @@ def save_colab(on_colab: bool):
 # gen = 26
 # model_name = "NET_2022-04-18_08-02-57"
 # gen = 35
-model_name = "NEW_NET_2022-04-21_09-32-57"
-gen = 53
+# model_name = "NEW_NET_2022-04-21_09-32-57"
+# gen = 53
+model_name = "FIXED_NET_2022-05-13_16-47-13"
+gen = 61
+save_drive = True
 COLAB = False
 if len(sys.argv) > 1:
     COLAB = True
+    save_drive = True
     if len(sys.argv) > 2:
         model_name = sys.argv[2]
         gen = int(sys.argv[3])
+if save_drive:
+    drive = DriveExplorer(on_colab=COLAB)
+    drive.retrieve_model(model_name)
+    drive.retrieve_training_data("FIXED_61")
+    drive.retrieve_training_data("FIXED_60")
 print(f"model_name: {model_name}", gen)
 total_cycles = gen
 datasets = ["gen8", "gen23"]
-datasets = [f"FIXED_{gen}"]
+datasets = ["FIXED_60", f"FIXED_{gen}"]
 temp = 1
 while 1:
     logging.info(f"GEN: {gen}, model: {model_name}, total:{total_cycles}")
@@ -65,7 +56,9 @@ while 1:
     res = find_best(new_model_name, model_name)
     if res[1] > res[-1]:
         model_name = new_model_name
-        save_colab(COLAB)
+        if save_drive:
+            drive.save_model(model_name)
+            drive.save_training_data(datasets[-1])
         gen += 1
         datasets.append(f"FIXED_{gen}")
     else:
