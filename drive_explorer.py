@@ -1,13 +1,13 @@
 import os
 
-from pydrive2.auth import GoogleAuth
-from pydrive2.drive import GoogleDrive
-
 
 class DriveExplorer:
     def __init__(self, on_colab):
         self.on_colab = on_colab
         if not on_colab:
+            from pydrive2.auth import GoogleAuth
+            from pydrive2.drive import GoogleDrive
+
             gauth = GoogleAuth()
             gauth.LocalWebserverAuth()  # Creates local webserver and auto handles authentication.
             self.drive = GoogleDrive(gauth)
