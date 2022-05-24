@@ -14,6 +14,7 @@ from variables import *
 from trainer import Trainer
 
 from logger import logging
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # train = torch.load("data/train_dataset.pt")
@@ -48,7 +49,9 @@ def train_net(dataset_names: list[str], model_name):
         n_epochs=N_EPOCHS,
         n_features=2,
     )
-    logging.info(f"new model name: {new_model_path} trained on datasets {dataset_names}")
+    logging.info(
+        f"new model name: {new_model_path} trained on datasets {dataset_names}"
+    )
     # trainer.plot_losses()
     return new_model_path
     # print(trainer.evaluate(test, batch_size=1, n_features=2))
