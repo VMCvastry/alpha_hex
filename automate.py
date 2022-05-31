@@ -44,10 +44,21 @@ if save_drive:
     drive.retrieve_model(model_name)
     drive.retrieve_training_data("FIXED_61")
     drive.retrieve_training_data("FIXED_60")
+    drive.retrieve_training_data("FIXED_62")
+    drive.retrieve_training_data("FIXED_63")
+    drive.retrieve_training_data("FIXED_64")
     time.sleep(3)
 print(f"model_name: {model_name}", gen)
 total_cycles = gen
-datasets = ["gen23", "FIXED_53", "FIXED_61", "FIXED_62", "FIXED_63", "FIXED_64"]
+datasets = [
+    "gen23",
+    "FIXED_53",
+    "FIXED_60",
+    "FIXED_61",
+    "FIXED_62",
+    "FIXED_63",
+    "FIXED_64",
+]
 temp = 1
 while 1:
     logging.info(f"GEN: {gen}, model: {model_name}, total:{total_cycles}")
