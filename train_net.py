@@ -47,8 +47,8 @@ def train_net(dataset_names: list[str], model_name):
         val_loader=[],
         batch_size=BATCH_SIZE,
         n_epochs=N_EPOCHS,
-        n_features=2,
     )
+    # trainer.plot_losses()
     logging.info(
         f"new model name: {new_model_path} trained on datasets {dataset_names}"
     )

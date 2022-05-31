@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import random
+
 import torch
 from torch.utils.data import Dataset
 from pathlib import Path
@@ -71,3 +73,29 @@ class CustomDataset(Dataset):
         values = torch.load(f"{path}/{name}_values.pkl", pickle_module=dill)
         policies = torch.load(f"{path}/{name}_policies.pkl", pickle_module=dill)
         return cls(states, values, policies)
+
+    # def remove_zero_value(self):
+    #     mask = self.values != 0
+    #     mask = mask.squeeze()
+    #     self.states = self.states[mask]
+    #     self.values = self.values[mask]
+    #     self.policies = self.policies[mask]
+    #
+    # def remove_ones_value(self):
+    #     mask = self.values != 1
+    #     mask = mask.squeeze()
+    #     self.states = self.states[mask]
+    #     self.values = self.values[mask]
+    #     self.policies = self.policies[mask]
+    #
+    # def even(self):
+    #     rem = 0
+    #     while rem < 104:
+    #         i = random.randint(0, len(self.states) - 1)
+    #         if self.values[i] == 1:
+    #             self.states = torch.cat((self.states[:i], self.states[i + 1 :]), 0)
+    #             self.values = torch.cat((self.values[:i], self.values[i + 1 :]), 0)
+    #             self.policies = torch.cat(
+    #                 (self.policies[:i], self.policies[i + 1 :]), 0
+    #             )
+    #             rem += 1
