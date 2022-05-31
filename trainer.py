@@ -81,7 +81,8 @@ class Trainer:
             )
         self.optimizer = optimizer
         self.train_losses = []
-        self.val_losses = []
+        self.value_losses = []
+        self.policy_losses = []
 
     def train_step(self, state, value, policy):
         # Sets model to train mode
@@ -127,6 +128,8 @@ class Trainer:
             val_loss = np.mean(val_batch_losses)
             pol_loss = np.mean(pol_batch_losses)
             self.train_losses.append(training_loss)
+            self.value_losses.append(val_loss)
+            self.policy_losses.append(pol_loss)
 
             # with torch.no_grad():
             #     batch_val_losses = []
@@ -138,7 +141,7 @@ class Trainer:
             #         val_loss = self.loss_fn(y_val, value).item()
             #         batch_val_losses.append(val_loss)
             #     validation_loss = np.mean(batch_val_losses)
-            #     self.val_losses.append(validation_loss)
+            #     self.validat_losses.append(validation_loss)
             validation_loss = -1
             if (epoch <= 10) | (epoch % 50 == 0) | (epoch == n_epochs):
                 logging.info(
@@ -150,7 +153,8 @@ class Trainer:
 
     def plot_losses(self):
         plt.plot(self.train_losses, label="Training loss")
-        plt.plot(self.val_losses, label="Validation loss")
+        plt.plot(self.value_losses, label="Value loss")
+        plt.plot(self.policy_losses, label="Policy loss")
         plt.legend()
         plt.title("Losses")
         plt.show()

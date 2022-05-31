@@ -19,7 +19,6 @@ class NET(nn.Module):
     ) -> None:
         super().__init__()
         layers = []
-        super().__init__()
         self.n_feature = n_feature
         self.input_conv = Convolution(input_channels, n_feature)
         for _ in range(res_net_depth):

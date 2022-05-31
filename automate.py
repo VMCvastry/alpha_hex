@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import time
 
 from train_net import train_net
 from self_play import run_self_play
@@ -41,6 +42,7 @@ if save_drive:
     drive.retrieve_model(model_name)
     drive.retrieve_training_data("FIXED_61")
     drive.retrieve_training_data("FIXED_60")
+    time.sleep(3)
 print(f"model_name: {model_name}", gen)
 total_cycles = gen
 datasets = ["gen8", "gen23"]
