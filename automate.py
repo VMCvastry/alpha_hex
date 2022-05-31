@@ -29,7 +29,9 @@ import os
 # gen = 53
 model_name = "FIXED_NET_2022-05-13_16-47-13"
 gen = 61
-save_drive = True
+model_name = ""
+gen = 1
+save_drive = False
 COLAB = False
 if len(sys.argv) > 1:
     COLAB = True
@@ -45,13 +47,12 @@ if save_drive:
     time.sleep(3)
 print(f"model_name: {model_name}", gen)
 total_cycles = gen
-datasets = ["gen8", "gen23"]
-datasets = ["FIXED_60", f"FIXED_{gen}"]
+datasets = ["gen23", "FIXED_53", "FIXED_61", "FIXED_62", "FIXED_63", "FIXED_64"]
 temp = 1
 while 1:
     logging.info(f"GEN: {gen}, model: {model_name}, total:{total_cycles}")
     if not temp:
-        run_self_play(f"FIXED_{gen}", model_name)
+        run_self_play(f"REBORN_{gen}", model_name)
     datasets = datasets[-5:]
     new_model_name = train_net(datasets, model_name)
 
@@ -62,7 +63,7 @@ while 1:
             drive.save_model(model_name)
             drive.save_training_data(datasets[-1])
         gen += 1
-        datasets.append(f"FIXED_{gen}")
+        datasets.append(f"REBORN_{gen}")
     else:
         logging.info("No improvement")
         if os.path.exists(f"models/{new_model_name}.pt"):
