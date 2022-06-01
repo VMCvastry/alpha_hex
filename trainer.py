@@ -170,9 +170,9 @@ class Trainer:
                 loss, value_loss, policy_loss = self.loss_fn(
                     predicted_value, value, predicted_policy, policy
                 )
-                batch_losses.append(loss)
-                val_batch_losses.append(value_loss)
-                pol_batch_losses.append(policy_loss)
+                batch_losses.append(loss.item())
+                val_batch_losses.append(value_loss.item())
+                pol_batch_losses.append(policy_loss.item())
             test_loss = np.mean(batch_losses)
             val_loss = np.mean(val_batch_losses)
             pol_loss = np.mean(pol_batch_losses)
