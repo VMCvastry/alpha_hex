@@ -35,7 +35,8 @@ def train_net(dataset_names: list[str], model_name):
             dataset.append_dataset(CustomDataset.load("./training_data", name))
     logging.info(f"dataset len: {dataset.__len__()}")
     train_set, test_set = torch.utils.data.random_split(
-        dataset, [len(dataset) - TEST_LEN, TEST_LEN]
+        dataset,
+        [len(dataset) - int(len(dataset) * TEST_RATIO), int(len(dataset) * TEST_RATIO)],
     )
     train = DataLoader(train_set, batch_size=BATCH_SIZE, shuffle=False, drop_last=False)
 
@@ -48,13 +49,13 @@ def train_net(dataset_names: list[str], model_name):
         batch_size=BATCH_SIZE,
         n_epochs=N_EPOCHS,
     )
+    test_loss, val_loss, pol_loss = trainer.test(test)
     # trainer.plot_losses()
     logging.info(
-        f"new model name: {new_model_path} trained on datasets {dataset_names}"
+        f"new model name: {new_model_path} trained on datasets {dataset_names}, test_loss: {test_loss}"
     )
     # trainer.plot_losses()
     return new_model_path
-    # print(trainer.evaluate(test, batch_size=1, n_features=2))
 
 
 if __name__ == "__main__":

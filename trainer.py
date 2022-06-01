@@ -83,6 +83,7 @@ class Trainer:
         self.train_losses = []
         self.value_losses = []
         self.policy_losses = []
+        self.validation_losses = []
 
     def train_step(self, state, value, policy):
         # Sets model to train mode
@@ -131,18 +132,21 @@ class Trainer:
             self.value_losses.append(val_loss)
             self.policy_losses.append(pol_loss)
 
-            # with torch.no_grad():
-            #     batch_val_losses = []
-            #     for x_val, y_val in val_loader:
-            #         # x_val = x_val.view([batch_size, -1, n_features]).to(self.device)
-            #         y_val = y_val.to(self.device)
-            #         self.model.eval()
-            #         policy, value = self.model(x_val)
-            #         val_loss = self.loss_fn(y_val, value).item()
-            #         batch_val_losses.append(val_loss)
-            #     validation_loss = np.mean(batch_val_losses)
-            #     self.validat_losses.append(validation_loss)
-            validation_loss = -1
+            with torch.no_grad():
+                batch_val_losses = []
+                for x_batch, value_batch, policy_batch in train_loader:
+                    # x_val = x_val.view([batch_size, -1, n_features]).to(self.device)
+                    x_batch = x_batch.to(self.device)
+                    value_batch = value_batch.to(self.device)
+                    policy_batch = policy_batch.to(self.device)
+                    self.model.eval()
+                    predicted_policy, predicted_value = self.model(x_batch)
+                    loss, value_loss, policy_loss = self.loss_fn(
+                        predicted_value, value_batch, predicted_policy, policy_batch
+                    )
+                    batch_val_losses.append(loss.item())
+                validation_loss = np.mean(batch_val_losses)
+                self.validation_losses.append(validation_loss)
             if (epoch <= 10) | (epoch % 50 == 0) | (epoch == n_epochs):
                 logging.info(
                     f"[{epoch}/{n_epochs}] Training loss: {training_loss:.4f}\tValue loss: {val_loss:.4f}\tPolicy loss: {pol_loss:.4f}\t Validation loss: {validation_loss:.4f},{datetime.now()}"
@@ -151,10 +155,37 @@ class Trainer:
         torch.save(self.model.state_dict(), f"models/{model_name}.pt")
         return model_name
 
+    def test(self, test_loader):
+        with torch.no_grad():
+            batch_losses = []
+            val_batch_losses = []
+            pol_batch_losses = []
+            for x_test, value, policy in test_loader:
+                # x_test = x_test.view([batch_size, -1, n_features]).to(self.device)
+                value = value.to(self.device)
+                policy = policy.to(self.device)
+                x_test = x_test.to(self.device)
+                self.model.eval()
+                predicted_policy, predicted_value = self.model(x_test)
+                loss, value_loss, policy_loss = self.loss_fn(
+                    predicted_value, value, predicted_policy, policy
+                )
+                batch_losses.append(loss)
+                val_batch_losses.append(value_loss)
+                pol_batch_losses.append(policy_loss)
+            test_loss = np.mean(batch_losses)
+            val_loss = np.mean(val_batch_losses)
+            pol_loss = np.mean(pol_batch_losses)
+            logging.info(
+                f"Test loss: {test_loss:.4f}\tValue loss: {val_loss:.4f}\tPolicy loss: {pol_loss:.4f}\t "
+            )
+        return test_loss, val_loss, pol_loss
+
     def plot_losses(self):
         plt.plot(self.train_losses, label="Training loss")
         plt.plot(self.value_losses, label="Value loss")
         plt.plot(self.policy_losses, label="Policy loss")
+        plt.plot(self.validation_losses, label="Validation loss")
         plt.legend()
         plt.title("Losses")
         plt.show()

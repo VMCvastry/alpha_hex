@@ -40,12 +40,11 @@ class CustomDataset(Dataset):
         )
         self.states, self.values, self.policies = new_states, new_values, new_policies
 
-    def append_dataset(
-        self, dataset: CustomDataset
-    ):  # todo remove duplicates also here
+    def append_dataset(self, dataset: CustomDataset):
         self.states = torch.cat((self.states, dataset.states), dim=0)
         self.values = torch.cat((self.values, dataset.values), dim=0)
         self.policies = torch.cat((self.policies, dataset.policies), dim=0)
+        self.remove_duplicates()  # todo check removing older
         assert self.states.size()[0] == self.values.size()[0] == self.policies.size()[0]
 
     def __getitem__(self, idx):
