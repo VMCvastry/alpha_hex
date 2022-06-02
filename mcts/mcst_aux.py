@@ -35,7 +35,7 @@ class Aux_MCTS:
             self.normalized_value = None
 
         def get_mean_value(self):
-            return self.value / (self.visits + 0.00001)
+            return -1 * self.get_next_player() * self.value / (self.visits + 0.00001)
 
         def get_normalized_worth(self):
             assert self.normalized_value is not None
@@ -51,13 +51,15 @@ class Aux_MCTS:
             subs = self.parent.subs
             return sum(s.visits for s in subs)
 
-        def interest(self, exploration):
+        def interest(
+            self, exploration
+        ):  # todo on first visit is always 0, add +1 layer visits
             return self.get_mean_value() + exploration * (
                 self.prior * np.sqrt(self.layer_visits()) / (self.visits + 1)
             )  # todo why prior
 
         def __repr__(self):
-            return f"{self.move}, mean_value={self.get_mean_value()},value {self.value}, visits={round(self.visits)}, interest={self.interest(100)}"
+            return f"{self.move}, mean_value={self.get_mean_value()},value {self.value}, visits={round(self.visits)}, interest={self.interest(5)}"
 
     @staticmethod
     def flip_state(state, player):

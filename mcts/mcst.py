@@ -65,4 +65,4 @@ class MCTS:
             return winner
         moves, outcome = self.network.poll(node.state, node.get_next_player())
         Aux_MCTS.expand(node, moves, game)
-        return outcome
+        return node.get_next_player() * outcome
