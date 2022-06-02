@@ -31,26 +31,6 @@ model_name = "FIXED_NET_2022-05-13_16-47-13"
 gen = 61
 model_name = "REBORN_NET_2022-05-31_23-52-28"
 gen = 13
-save_drive = False
-COLAB = False
-if len(sys.argv) > 1:
-    COLAB = True
-    save_drive = True
-    if len(sys.argv) > 2:
-        model_name = sys.argv[2]
-        gen = int(sys.argv[3])
-if save_drive:
-    drive = DriveExplorer(on_colab=COLAB)
-    drive.retrieve_model(model_name)
-    drive.retrieve_training_data("FIXED_61")
-    drive.retrieve_training_data("REBORN_8")
-    drive.retrieve_training_data("FIXED_62")
-    drive.retrieve_training_data("REBORN_9")
-    drive.retrieve_training_data("REBORN_10")
-    drive.retrieve_training_data("REBORN_11")
-    drive.retrieve_training_data("REBORN_12")
-    time.sleep(3)
-print(f"model_name: {model_name}", gen)
 total_cycles = 27
 datasets = [
     "gen23",
@@ -62,14 +42,33 @@ datasets = [
     "FIXED_64",
 ]
 datasets = [
-    "FIXED_61",
-    "FIXED_62",
-    "REBORN_8",
+    # "FIXED_61",
+    # "FIXED_62",
+    # "REBORN_8",
     "REBORN_9",
     "REBORN_10",
     "REBORN_11",
     "REBORN_12",
 ]
+save_drive = False
+COLAB = False
+if len(sys.argv) > 1:
+    COLAB = True
+    save_drive = True
+    if len(sys.argv) > 2:
+        model_name = sys.argv[2]
+        gen = int(sys.argv[3])
+        total_cycles = int(sys.argv[4])
+        datasets = sys.argv[5:]
+
+print(f"model_name: {model_name}", gen)
+
+if save_drive:
+    drive = DriveExplorer(on_colab=COLAB)
+    drive.retrieve_model(model_name)
+    for data in datasets:
+        drive.retrieve_training_data(data)
+    time.sleep(3)
 temp = 0
 while 1:
     logging.info(f"GEN: {gen}, model: {model_name}, total:{total_cycles}")
