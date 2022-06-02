@@ -52,14 +52,15 @@ datasets = [
 ]
 save_drive = False
 COLAB = False
+print(sys.argv)
 if len(sys.argv) > 1:
     COLAB = True
     save_drive = True
     if len(sys.argv) > 2:
-        model_name = sys.argv[2]
-        gen = int(sys.argv[3])
-        total_cycles = int(sys.argv[4])
-        datasets = sys.argv[5:]
+        model_name = sys.argv[1]
+        gen = int(sys.argv[2])
+        total_cycles = int(sys.argv[3])
+        datasets = sys.argv[4:]
 
 print(f"model_name: {model_name}", gen)
 
