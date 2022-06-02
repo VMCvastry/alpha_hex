@@ -74,7 +74,7 @@ while 1:
     logging.info(f"GEN: {gen}, model: {model_name}, total:{total_cycles}")
     if not temp:
         run_self_play(f"REBORN_{gen}", model_name)
-    datasets = datasets[-10:]
+    # datasets = datasets[-10:]
     new_model_name = train_net(datasets, model_name)
 
     res = find_best(new_model_name, model_name)
