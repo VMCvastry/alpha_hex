@@ -68,9 +68,9 @@ class Aux_MCTS:
     @staticmethod
     def pick_best_move(node: Aux_MCTS.Node, temperature):
         logging.debug("possible MCTS moves \n" + "\n".join([str(n) for n in node.subs]))
-        # logging.debug(
-        #     f"possible MCTS moves {[n.get_normalized_value() for n in node.subs]}"
-        # )
+        logging.debug(
+            f"possible MCTS moves {[n.get_normalized_worth() for n in node.subs]}"
+        )
         # denominator = node.layer_visits() ** (1 / temperature)
         # best_node = max(node.subs, key=lambda x: x.visits)  # todo set real formula
         # best_node = max(

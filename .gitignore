@@ -143,4 +143,4 @@ cython_debug/
 models/
 old_mcst/
 training_data/
-
+client_secrets.json
