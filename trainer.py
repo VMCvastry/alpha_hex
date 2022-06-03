@@ -182,14 +182,15 @@ class Trainer:
         return test_loss, val_loss, pol_loss
 
     def plot_losses(self):
-        plt.plot(self.train_losses, label="Training loss")
-        plt.plot(self.value_losses, label="Value loss")
-        plt.plot(self.policy_losses, label="Policy loss")
-        plt.plot(self.validation_losses, label="Validation loss")
-        plt.legend()
-        plt.title("Losses")
-        plt.show()
-        plt.close()
+        if PLOT:
+            plt.plot(self.train_losses, label="Training loss")
+            plt.plot(self.value_losses, label="Value loss")
+            plt.plot(self.policy_losses, label="Policy loss")
+            plt.plot(self.validation_losses, label="Validation loss")
+            plt.legend()
+            plt.title("Losses")
+            plt.show()
+            plt.close()
 
     def evaluate(self, test_loader, batch_size=1, n_features=1):
         with torch.no_grad():

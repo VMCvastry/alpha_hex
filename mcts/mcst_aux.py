@@ -55,7 +55,7 @@ class Aux_MCTS:
             self, exploration
         ):  # todo on first visit is always 0, add +1 layer visits
             return self.get_mean_value() + exploration * (
-                self.prior * np.sqrt(self.layer_visits()) / (self.visits + 1)
+                self.prior * np.sqrt(self.layer_visits() + 1) / (self.visits + 1)
             )  # todo why prior
 
         def __repr__(self):

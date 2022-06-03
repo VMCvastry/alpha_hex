@@ -54,7 +54,7 @@ def train_net(dataset_names: list[str], model_name):
     logging.info(
         f"new model name: {new_model_path} trained on datasets {dataset_names}, test_loss: {test_loss}"
     )
-    # trainer.plot_losses()
+    trainer.plot_losses()
     return new_model_path
 
 

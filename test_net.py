@@ -22,12 +22,12 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 N = 200
 train_data = torch.tensor(
-    [[[[1, 1, 1]] * 3] * 2] * N + [[[[0, 0, 0]] * 3] * 2] * N,
+    [[[[1, 1, 0]] * 3, [[0, 0, 0]] * 3]] * N + [[[[0, 0, 0]] * 3, [[1, 1, 0]] * 3]] * N,
     dtype=torch.float32,
 )
 train_dataset = CustomDataset(
     train_data,
-    torch.tensor([1] * N + [0] * N, dtype=torch.float32)
+    torch.tensor([1] * N + [-1] * N, dtype=torch.float32)
     .unsqueeze(1)
     .unsqueeze(1)
     .unsqueeze(1),
@@ -36,33 +36,34 @@ train_dataset = CustomDataset(
         dtype=torch.float32,
     ),
 )
+train_dataset.store("./training_data", "testing")
 train = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=False, drop_last=False)
-test_data = torch.tensor(
-    [[[[1, 1, 1]] * 3] * 2] * 3 + [[[[0, 0, 0]] * 3] * 2] * 3,
-    dtype=torch.float32,
-)
-
-test_dataset = TensorDataset(
-    test_data,
-    torch.tensor([1] * 3 + [0] * 3, dtype=torch.float32)
-    .unsqueeze(1)
-    .unsqueeze(1)
-    .unsqueeze(1),
-    torch.tensor(
-        [[[1, 0, 0]] * 3] * 3 + [[[0, 0, 1]] * 3] * 3,
-        dtype=torch.float32,
-    ),
-)
-test = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, drop_last=False)
-test_loader_one = CustomDataset.load("./training_data", "gen1")
-for samples, targets1, targets2 in test_loader_one:
+# test_data = torch.tensor(
+#     [[[[1, 1, 1]] * 3] * 2] * 3 + [[[[0, 0, 0]] * 3] * 2] * 3,
+#     dtype=torch.float32,
+# )
+#
+# test_dataset = TensorDataset(
+#     test_data,
+#     torch.tensor([1] * 3 + [0] * 3, dtype=torch.float32)
+#     .unsqueeze(1)
+#     .unsqueeze(1)
+#     .unsqueeze(1),
+#     torch.tensor(
+#         [[[1, 0, 0]] * 3] * 3 + [[[0, 0, 1]] * 3] * 3,
+#         dtype=torch.float32,
+#     ),
+# )
+# test = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, drop_last=False)
+# test_loader_one = CustomDataset.load("./training_data", "gen1")
+for samples, targets1, targets2 in train:
     print(samples.size())
     # samples.view([1, -1, 1])
     print(samples)
     # targets = targets.unsqueeze(0).unsqueeze(0).unsqueeze(0)
     print(targets1)
     print(targets2)
-    # exit(1)
+    exit(1)
 
 
 # for images, labels in test_loader_one:

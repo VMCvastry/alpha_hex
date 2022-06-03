@@ -20,4 +20,5 @@ MOMENTUM = 0.9
 WEIGHT_DECAY = 1e-4  # todo is equal to l2 regularization?
 # dropout = 0.2
 
+PLOT = 0
 DEBUG = 0

@@ -29,40 +29,80 @@ def turn(game, move):
 def test(trainer, game, player_turn):
     print(trainer.poll(game.get_state(), player_turn))
 
-    player = MCTS(trainer, game.get_state(), player_turn)
+    player = MCTS(trainer, game.get_state(), player_turn, exploration=1.4)
     a, b = player.search()
     print(a)
     print(b)
 
 
-# trainer = Trainer(model_name="best_stupid_2022-04-14_09-29-42")
-# trainer = Trainer(model_name="NET_2022-04-17_09-05-35_BEST")
-# new_trainer = Trainer(model_name="NEW_NET_2022-04-19_09-22-43")
-game = Game([[1, 0, 0], [1, -1, 0], [-1, 1, -1]])  # test mtcs 1
+game = Game([[1, 0, 0], [1, -1, 0], [-1, 1, -1]])
 game = Game([[0, 1, 1], [-1, 0, 0], [0, 0, 0]])
-# game = Game([[1, 0, 0], [-1, 1, 0], [-1, -1, 0]])
-# game = Game([[0, 0, 1], [0, -1, -1], [0, 0, 1]])  # test if value is 0 and other neg 1
+game = Game([[1, 0, 0], [-1, 1, 0], [-1, -1, 0]])
+game = Game([[0, 0, 1], [0, -1, -1], [0, 0, 1]])
 # game = Game([[-1, 1, 1], [-1, 0, 0], [1, 0, 0]])
 # game = Game([[-1, 0, -1], [1, 0, 0], [-1, 1, 1]])
-player_turn = 1
-print(game)
-print("player turn: {}".format(player_turn))
+# game = Game([[-1, 0, 0], [0, 0, 1], [0, 0, 0]])
 
-# test(Trainer(model_name="NET_2022-04-17_09-05-35_BEST"), game, player_turn)
-test(Trainer(model_name="NEW_NET_2022-04-21_09-32-57_BEST"), game, player_turn)
-# test(Trainer(model_name="NEW_NET_2022-04-21_12-13-32"), game, player_turn)
-# test(Trainer(model_name="NEW_NET_2022-04-21_22-01-52"), game, player_turn)
-# test(Trainer(model_name="NEW_NET_2022-04-26_13-40-49"), game, player_turn)
-# print(opt.poll([[1, None, None], [1, -1, None], [-1, 1, -1]]))
-# game = Game(player=-1)
-# while 1:
-#     x, y = map(int, input(":").split(" "))
-#     move = Game.Move(x, y, -1)
-#     # move = random.choice(list(game.get_available_moves()))
-#     turn(game, move)
+
+game = Game([[0, -1, 1], [-1, -1, 1], [0, 1, 0]])
+game = Game([[-1, 0, -1], [1, 0, 0], [1, 1, -1]])
+
+player_turn = 1
+# print(game)
+# print("player turn: {}".format(player_turn))
+
+
+# test(Trainer(model_name="NEW_NET_2022-04-21_09-32-57_BEST"), game, player_turn)
+# test(Trainer(model_name="FIXED_NET_2022-05-13_11-12-33"), game, player_turn)
+# test(Trainer(model_name="OLDEXP_FIXED_NET_2022-05-13_15-37-30"), game, player_turn)
+# test(Trainer(model_name="NEWEXP_FIXED_NET_2022-05-13_15-37-30"), game, player_turn)
+# #
+# test(Trainer(model_name="NEWEXP_FIXED_NET_2022-05-13_16-47-13"), game, player_turn)
+# test(Trainer(model_name="FIXED_NET_2022-05-14_19-50-16"), game, player_turn)
+# cur = "FIXED_NET_2022-05-15_13-33-47"
+# cur = "FIXED_NET_2022-05-31_23-09-06"
+# print(Trainer(model_name=cur).poll(game.get_state(), player_turn))
+# print(
+#     Trainer(model_name=cur).poll(
+#         Game([[0, -1, 1], [-1, -1, 1], [0, 1, 0]]).get_state(), player_turn
+#     )
+# )
+
 #
-#     player = MCTS(new_trainer, game.get_state(), 1)
-#     a, b = player.search()
-#     print(a)
-#     print(b)
-#     turn(game, a)
+
+# print(opt.poll([[1, None, None], [1, -1, None], [-1, 1, -1]]))
+
+# exit()
+# # new_trainer = Trainer(model_name="NEW_NET_2022-04-21_09-32-57_BEST")
+new_trainer = Trainer(model_name="REBORN_NET_2022-05-31_23-52-28")  # WRONG TRIS
+new_trainer2 = Trainer(model_name="REBORN_NET_2022-06-01_12-11-28")
+new_trainer3 = Trainer(model_name="REBORN_NET_2022-06-01_12-35-11")
+new_trainer4 = Trainer(model_name="REBORN_NET_2022-06-02_17-35-19")
+game = Game(player=1)
+while 1:
+    logging.info(new_trainer.poll(game.get_state(), player_turn))
+    logging.info(new_trainer2.poll(game.get_state(), player_turn))
+    logging.info(new_trainer3.poll(game.get_state(), player_turn))
+    logging.info(new_trainer4.poll(game.get_state(), player_turn))
+    player = MCTS(new_trainer4, game.get_state(), 1, exploration=1.4)
+    a, b = player.search()
+    logging.info(a)
+    logging.info(b)
+    turn(game, a)
+
+    x, y = map(int, input(":").split(" "))
+    move = Game.Move(x, y, -1)
+    # move = random.choice(list(game.get_available_moves()))
+    turn(game, move)
+
+
+# game = Game([[1, 0, 0], [-1, -1, 0], [1, 0, -1]])
+# game = Game([[0, 0, 0], [1, 0, -1], [-1, 0, 0]])
+# logging.info(new_trainer.poll(game.get_state(), player_turn))
+# logging.info(new_trainer2.poll(game.get_state(), player_turn))
+# logging.info(new_trainer3.poll(game.get_state(), player_turn))
+# logging.info(new_trainer3.poll(game.get_state(), player_turn))
+# player = MCTS(new_trainer, game.get_state(), 1, exploration=1.4)
+# a, b = player.search()
+# logging.info(a)
+# logging.info(b)

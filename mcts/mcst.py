@@ -36,7 +36,7 @@ class MCTS:
 
     def search(self) -> tuple[Game.Move, list[list]]:
         while (
-            self.total_simulations < SIMULATIONS_CAP
+            self.total_simulations <= SIMULATIONS_CAP
             and time.time() - self.start_time < TIME_CAP
         ):
             self.step()

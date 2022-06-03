@@ -88,7 +88,7 @@ while 1:
             drive.save_model(model_name)
             drive.save_training_data(datasets[-1])
         gen += 1
-        datasets.append(f"REBORN_{gen}")
+        datasets.append(f"WINNER_{gen}")
     else:
         logging.info("No improvement")
         if os.path.exists(f"models/{new_model_name}.pt"):
