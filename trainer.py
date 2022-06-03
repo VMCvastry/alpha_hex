@@ -108,7 +108,7 @@ class Trainer:
         return loss.item(), value_loss.item(), policy_loss.item()
 
     def train(self, train_loader, val_loader, batch_size=64, n_epochs=50, n_features=1):
-        model_name = f'REBORN_{type(self.model).__name__}_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
+        model_name = f'WINNER_{type(self.model).__name__}_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
 
         for epoch in range(1, n_epochs + 1):
             batch_losses = []

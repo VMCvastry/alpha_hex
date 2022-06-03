@@ -50,9 +50,12 @@ datasets = [
     "REBORN_11",
     "REBORN_12",
 ]
+gen = 0
+total_cycles = 0
+datasets = ["WINNER_0"]
+model_name = ""
 save_drive = False
 COLAB = False
-print(sys.argv)
 if len(sys.argv) > 1:
     COLAB = True
     save_drive = True
