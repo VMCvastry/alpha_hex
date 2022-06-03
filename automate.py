@@ -77,7 +77,7 @@ temp = 0
 while 1:
     logging.info(f"GEN: {gen}, model: {model_name}, total:{total_cycles}")
     if not temp:
-        run_self_play(f"REBORN_{gen}", model_name)
+        run_self_play(f"WINNER_{gen}", model_name)
     # datasets = datasets[-10:]
     new_model_name = train_net(datasets, model_name)
 
