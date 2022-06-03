@@ -3,13 +3,12 @@ import torch
 
 from torch.utils.data import DataLoader
 
-from custom_dataset import CustomDataset
-import random
+from utils.custom_dataset import CustomDataset
 
 # a=list(test_loader_one)
 # random.shuffle(a)
 s = []
-test_loader_one = CustomDataset.load("./training_data", "REBORN_35")
+test_loader_one = CustomDataset.load("../training_data", "REBORN_35")
 test_loader_one = DataLoader(test_loader_one, batch_size=1, shuffle=True)
 for samples, targets1, targets2 in test_loader_one:
     # print(samples.size())

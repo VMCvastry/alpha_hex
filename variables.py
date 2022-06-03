@@ -13,12 +13,12 @@ TEMPERATURE = 1
 
 N_GAMES = 30
 
-N_GAMES_DUEL = 40
+N_GAMES_DUEL = 10
 
 LEARNING_RATE = 1e-2
 MOMENTUM = 0.9
 WEIGHT_DECAY = 1e-4  # todo is equal to l2 regularization?
 # dropout = 0.2
 
-PLOT = 0
-DEBUG = 0
+PLOT = 1
+DEBUG = 1

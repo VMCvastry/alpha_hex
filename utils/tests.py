@@ -1,14 +1,9 @@
 from __future__ import annotations
-from logger import logging
-from custom_dataset import CustomDataset
+from utils.logger import logging
 from mcts.mcst import MCTS
 from game import Game
-from net import NET
-from variables import *
-from trainer import Trainer
+from net.trainer import Trainer
 import torch
-from torch import nn, optim
-from torch.utils.data import DataLoader, TensorDataset
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

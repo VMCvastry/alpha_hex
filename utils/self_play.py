@@ -2,15 +2,12 @@ from __future__ import annotations
 from logger import logging
 from concurrent.futures import ThreadPoolExecutor
 
-from custom_dataset import CustomDataset
+from utils.custom_dataset import CustomDataset
 from mcts.mcst import MCTS
 from game import Game
-from net import NET
 from variables import *
-from trainer import Trainer, split_board
+from net.trainer import Trainer, split_board
 import torch
-from torch import nn, optim
-from torch.utils.data import DataLoader, TensorDataset
 import threading
 
 

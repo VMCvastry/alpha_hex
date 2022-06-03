@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import copy
-from logger import logging
 
 
 class Game:

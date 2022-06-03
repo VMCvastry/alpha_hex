@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from logger import logging
+from utils.logger import logging
 import random
 import numpy as np
 from game import Game
-from variables import *
 
 
 def get_move_prior(priors, move: Game.Move):

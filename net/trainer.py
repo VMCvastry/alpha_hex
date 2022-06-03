@@ -1,15 +1,14 @@
 from __future__ import annotations
-import time
 
 import numpy as np
 import torch
 from datetime import datetime
-from torch import nn, optim
+from torch import optim
 from matplotlib import pyplot as plt
 
-from net import NET
+from net.net import NET
 from variables import *
-from logger import logging
+from utils.logger import logging
 
 
 def split_board(state, player):  # todo when to switch?

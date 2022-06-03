@@ -1,19 +1,13 @@
 from __future__ import annotations
 
-from datetime import datetime
-
 import torch
-from torch import nn, optim
-from torch.utils.data import DataLoader, TensorDataset
+from torch.utils.data import DataLoader
 
-from custom_dataset import CustomDataset
-from duel import find_best
-from game import Game
-from net import NET
+from utils.custom_dataset import CustomDataset
 from variables import *
 from trainer import Trainer
 
-from logger import logging
+from utils.logger import logging
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -30,9 +24,9 @@ def train_net(dataset_names: list[str], model_name):
     dataset: CustomDataset | None = None
     for i, name in enumerate(dataset_names):
         if i == 0:
-            dataset = CustomDataset.load("./training_data", name)
+            dataset = CustomDataset.load("../training_data", name)
         else:
-            dataset.append_dataset(CustomDataset.load("./training_data", name))
+            dataset.append_dataset(CustomDataset.load("../training_data", name))
     logging.info(f"dataset len: {dataset.__len__()}")
     train_set, test_set = torch.utils.data.random_split(
         dataset,

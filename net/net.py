@@ -1,12 +1,11 @@
 from __future__ import annotations
 import torch
 from torch import nn
-import torch.nn.functional as F
-from net_blocks.compression_block import CompressConv
-from net_blocks.convolution_block import Convolution
-from net_blocks.policy_head import PolicyHead
-from net_blocks.residual_block import ResidualBlock
-from net_blocks.value_head import ValueHead
+from net.net_blocks import CompressConv
+from net.net_blocks import Convolution
+from net.net_blocks import PolicyHead
+from net.net_blocks import ResidualBlock
+from net.net_blocks import ValueHead
 
 
 class NET(nn.Module):

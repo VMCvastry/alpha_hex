@@ -1,12 +1,9 @@
 from __future__ import annotations
-from datetime import datetime
 
 import torch
-from torch import nn, optim
-from torch.utils.data import DataLoader, TensorDataset
+from torch.utils.data import DataLoader
 
-from custom_dataset import CustomDataset
-from net import NET
+from utils.custom_dataset import CustomDataset
 from variables import *
 from trainer import Trainer
 
@@ -74,13 +71,13 @@ for samples, targets1, targets2 in train:
 #     print(outputs)
 #     print(outputs.size())
 # exit(1)
-trainer = Trainer()
-trainer.train(
-    train,
-    val_loader=[],
-    batch_size=BATCH_SIZE,
-    n_epochs=N_EPOCHS,
-    n_features=2,
-)
-# opt.plot_losses()
-print(trainer.evaluate(test, batch_size=1, n_features=2))
+# trainer = Trainer()
+# trainer.train(
+#     train,
+#     val_loader=[],
+#     batch_size=BATCH_SIZE,
+#     n_epochs=N_EPOCHS,
+#     n_features=2,
+# )
+# # opt.plot_losses()
+# print(trainer.evaluate(test, batch_size=1, n_features=2))

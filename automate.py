@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-import datetime
 import time
 
-from train_net import train_net
-from self_play import run_self_play
-from duel import find_best
+from net.train_net import train_net
+from utils.self_play import run_self_play
+from utils.duel import find_best
 import sys
-from logger import logging
-from drive_explorer import DriveExplorer
+from utils.logger import logging
+from utils.drive_explorer import DriveExplorer
 import os
 
 # fix value
