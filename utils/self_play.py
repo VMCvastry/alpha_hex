@@ -37,10 +37,10 @@ class PlayGame:
             self.policies.append(policy)
             self.turn.append(self.game.player)
             self.game.set_mark(move)
-            if self.game.check_tic_tac_toe() is not None:
-                logging.debug("{} wins!".format(self.game.check_tic_tac_toe()))
+            if self.game.check_if_winner() is not None:
+                logging.debug("{} wins!".format(self.game.check_if_winner()))
                 logging.debug(self.game)
-                self.outcome = self.game.check_tic_tac_toe()
+                self.outcome = self.game.check_if_winner()
                 return self.outcome
 
     def get_tensors(self):

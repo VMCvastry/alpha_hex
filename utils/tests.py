@@ -11,8 +11,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def turn(game, move):
     game.set_mark(move)
     logging.info(game)
-    if game.check_tic_tac_toe() is not None:
-        logging.info("{} wins!".format(game.check_tic_tac_toe()))
+    if game.check_if_winner() is not None:
+        logging.info("{} wins!".format(game.check_if_winner()))
 
 
 #

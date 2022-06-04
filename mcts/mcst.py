@@ -60,7 +60,7 @@ class MCTS:
 
     def simulate(self, node: Aux_MCTS.Node) -> int:
         game = Game(node.state, player=node.get_next_player())
-        winner = game.check_tic_tac_toe()
+        winner = game.check_if_winner()
         if winner is not None:  # todo check, should be good
             return winner
         moves, outcome = self.network.poll(node.state, node.get_next_player())

@@ -12,10 +12,10 @@ from variables import *
 def turn(game, move):
     game.set_mark(move)
     logging.debug(game)
-    if game.check_tic_tac_toe() is not None:
-        logging.debug("{} wins!".format(game.check_tic_tac_toe()))
+    if game.check_if_winner() is not None:
+        logging.debug("{} wins!".format(game.check_if_winner()))
 
-    return game.check_tic_tac_toe()
+    return game.check_if_winner()
 
 
 def duel(trainer1: Trainer, trainer2: Trainer):
@@ -76,6 +76,5 @@ if __name__ == "__main__":
     # model_1 = "REBORN_NET_2022-06-01_12-35-11"
 
     model_1 = "REBORN_NET_2022-06-02_17-35-19"
-    model_1 = "WINNER_NET_2022-06-03_16-14-06"
-    model_2 = "WINNER_NET_2022-06-03_16-14-06"
+    model_2 = "WINNER_NET_2022-06-03_18-16-50"
     print(find_best(model_1, model_2))
