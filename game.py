@@ -32,13 +32,13 @@ class Game:
     def set_mark(self, move: Move):
         assert move.mark == self.player
         self.board[move.x][move.y] = move.mark
-        winner = self.check_tic_tac_toe()
+        winner = self.check_if_winner()
         if winner is not None:
             # logging.debug("{} wins!".format(winner))
             return winner
         self.player = -1 * self.player
 
-    def check_tic_tac_toe(self) -> int | None:
+    def check_if_winner(self) -> int | None:
         # Check rows
         for i in range(3):
             if self.board[i][0] == self.board[i][1] == self.board[i][2] != 0:
