@@ -30,8 +30,8 @@ def crap_loss(predicted_value, value, predicted_policy, policy):
 
 
 def real_loss(predicted_value, value, predicted_policy, policy):
-    policy_vector = policy.reshape((-1, 9))  # grid to vector
-    predicted_policy_vector = predicted_policy.reshape((-1, 9))
+    policy_vector = policy.reshape((-1, GRID_SIZE ** 2))  # grid to vector
+    predicted_policy_vector = predicted_policy.reshape((-1, GRID_SIZE ** 2))
     value_loss = torch.mean((value - predicted_value) ** 2)
     policy_loss = torch.mean(
         -torch.sum(policy_vector * torch.log(predicted_policy_vector), 1)
@@ -107,7 +107,7 @@ class Trainer:
         return loss.item(), value_loss.item(), policy_loss.item()
 
     def train(self, train_loader, val_loader, batch_size=64, n_epochs=50, n_features=1):
-        model_name = f'WINNER_{type(self.model).__name__}_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
+        model_name = f'{OUTPUT_LABEL}_{type(self.model).__name__}_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
 
         for epoch in range(1, n_epochs + 1):
             batch_losses = []

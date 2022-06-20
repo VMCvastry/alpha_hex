@@ -26,6 +26,8 @@ import os
 # gen = 35
 # model_name = "NEW_NET_2022-04-21_09-32-57"
 # gen = 53
+from variables import OUTPUT_LABEL
+
 model_name = "FIXED_NET_2022-05-13_16-47-13"
 gen = 61
 model_name = "REBORN_NET_2022-05-31_23-52-28"
@@ -51,7 +53,7 @@ datasets = [
 ]
 gen = 0
 total_cycles = 0
-datasets = ["WINNER_0"]
+datasets = [f"{OUTPUT_LABEL}_0"]
 model_name = ""
 save_drive = False
 COLAB = False
@@ -76,7 +78,7 @@ temp = 0
 while 1:
     logging.info(f"GEN: {gen}, model: {model_name}, total:{total_cycles}")
     if not temp:
-        run_self_play(f"WINNER_{gen}", model_name)
+        run_self_play(f"{OUTPUT_LABEL}_{gen}", model_name)
     # datasets = datasets[-10:]
     new_model_name = train_net(datasets, model_name)
 
@@ -87,7 +89,7 @@ while 1:
             drive.save_model(model_name)
             drive.save_training_data(datasets[-1])
         gen += 1
-        datasets.append(f"WINNER_{gen}")
+        datasets.append(f"{OUTPUT_LABEL}_{gen}")
     else:
         logging.info("No improvement")
         if os.path.exists(f"models/{new_model_name}.pt"):

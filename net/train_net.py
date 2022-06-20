@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 
 from utils.custom_dataset import CustomDataset
 from variables import *
-from trainer import Trainer
+from net.trainer import Trainer
 
 from utils.logger import logging
 

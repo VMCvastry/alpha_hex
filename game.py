@@ -4,38 +4,39 @@ import copy
 import random
 
 from utils.logger import logging
-
-N = 4
+from variables import GRID_SIZE
 
 
 class Game:
     def __init__(self, board: list = None, player=1):
         self.board: list[list[Game.BoardCell]]
+        self.winner = None
+        self.player = player
         if board is None:
-            self.board = [[Game.BoardCell(j, i) for i in range(N)] for j in range(N)]
+            self.board = [
+                [Game.BoardCell(j, i) for i in range(GRID_SIZE)]
+                for j in range(GRID_SIZE)
+            ]
         else:
-            logging.critical("Board is not None, check if works")
             self.board = [
                 [Game.BoardCell(j, i, cell) for i, cell in enumerate(row)]
                 for j, row in enumerate(board)
             ]
-        for i in range(N):
-            for j in range(N):
+        for i in range(GRID_SIZE):
+            for j in range(GRID_SIZE):
                 self.board[i][j].neighbours = self.get_neighbours(i, j)
-        for i in range(N):
-            for j in range(N):
+        for i in range(GRID_SIZE):
+            for j in range(GRID_SIZE):
                 component_value = self.board[i][j].edge_connection()
                 if component_value and self.propagate_component(i, j, component_value):
                     logging.critical("cloned finished game")
-
-        self.player = player
+                    self.winner = self.player * -1
+        if self.check_if_stale():
+            self.winner = self.player * -1
 
     def __copy__(self):
-        logging.critical(" check if clkoning works")
-        game = Game()
-        game.board = copy.deepcopy(self.board)
-        game.player = self.player
-        return game
+        logging.critical(" Should not clone")
+        raise NotImplementedError
 
     def get_state(self):
         return [[cell.value if cell else 0 for cell in row] for row in self.board]
@@ -62,12 +63,12 @@ class Game:
                 return False
             if self.x == 0 and self.value == 1:
                 return "NORD"
-            if self.x == N - 1 and self.value == 1:
+            if self.x == GRID_SIZE - 1 and self.value == 1:
                 return "SUD"
 
             if self.y == 0 and self.value == -1:
                 return "EST"
-            if self.y == N - 1 and self.value == -1:
+            if self.y == GRID_SIZE - 1 and self.value == -1:
                 return "OVEST"
             for n in self.neighbours:
                 if n.component and self.value == n.value:
@@ -89,7 +90,7 @@ class Game:
                 and n.value == cell.value
                 and n.component != component
             ):
-                print(n.component, component)
+                # print(n.component, component)
                 return True
 
     def set_mark(self, move: Move):
@@ -105,16 +106,27 @@ class Game:
             return self.player
         self.player = -1 * self.player
 
+    def get_marked_state(self, move: Move) -> list[list[int]]:
+        state = self.get_state()
+        state[move.x][move.y] = move.mark
+        return state
+
     def check_if_stale(self) -> bool:
 
-        if all((self.board[x][y].value != 0 for x in range(N) for y in range(N))):
+        if all(
+            (
+                self.board[x][y].value != 0
+                for x in range(GRID_SIZE)
+                for y in range(GRID_SIZE)
+            )
+        ):
             return True  # the player placing the last stone wins
         return False
 
     def get_available_moves(self) -> set[Game.Move]:
         moves = set()
-        for i in range(N):
-            for j in range(N):
+        for i in range(GRID_SIZE):
+            for j in range(GRID_SIZE):
                 if self.board[i][j] and self.board[i][j].value == 0:
                     moves.add(Game.Move(i, j, self.player))
         return moves
@@ -124,8 +136,8 @@ class Game:
         for i in range(x - 1, x + 2):
             for j in range(y - 1, y + 2):
                 if (
-                    0 <= i < N
-                    and 0 <= j < N
+                    0 <= i < GRID_SIZE
+                    and 0 <= j < GRID_SIZE
                     and (i, j) != (x, y)
                     and (i, j) != (x + 1, y + 1)
                     and (i, j) != (x - 1, y - 1)
@@ -145,10 +157,10 @@ class Game:
                     str(
                         [
                             self.board[x][y].value if self.board[x][y] else 0
-                            for y in range(N)
+                            for y in range(GRID_SIZE)
                         ]
                     )
-                    for x in range(N)
+                    for x in range(GRID_SIZE)
                 ]
             )
             + "\n"
@@ -162,7 +174,7 @@ if __name__ == "__main__":
         logging.info(game)
         if winner is not None:
             logging.info("{} wins!".format(winner))
-            exit()
+            exit(1)
 
     game = Game(player=1)
     while 1:

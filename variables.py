@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+GRID_SIZE = 4
+OUTPUT_LABEL = "HEX"
+
 N_EPOCHS = 100
 BATCH_SIZE = 32
 HIDDEN_FEATURES = 64
@@ -11,7 +14,7 @@ EXPLORATION_PARAMETER = 5
 # EXPLORATION_PARAMETER = 1.4
 TEMPERATURE = 1
 
-N_GAMES = 30
+N_GAMES = 10
 
 N_GAMES_DUEL = 10
 
@@ -21,4 +24,4 @@ WEIGHT_DECAY = 1e-4  # todo is equal to l2 regularization?
 # dropout = 0.2
 
 PLOT = 1
-DEBUG = 1
+DEBUG = 0

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from logger import logging
+from utils.logger import logging
 from concurrent.futures import ThreadPoolExecutor
 
 from utils.custom_dataset import CustomDataset
@@ -36,11 +36,11 @@ class PlayGame:
             self.states.append(self.game.get_state())
             self.policies.append(policy)
             self.turn.append(self.game.player)
-            self.game.set_mark(move)
-            if self.game.check_if_winner() is not None:
-                logging.debug("{} wins!".format(self.game.check_if_winner()))
+            winner = self.game.set_mark(move)
+            if winner is not None:
+                logging.debug("{} wins!".format(winner))
                 logging.debug(self.game)
-                self.outcome = self.game.check_if_winner()
+                self.outcome = winner
                 return self.outcome
 
     def get_tensors(self):
@@ -52,22 +52,23 @@ class PlayGame:
             full_turns.append(self.turn[i])
             full_states.append(cur_state)
             full_priors.append(cur_policy)
-            for j in range(3):
-                cur_state = rotate_left(cur_state)
-                cur_policy = rotate_left(cur_policy)
-                full_states.append(cur_state)
-                full_priors.append(cur_policy)
-                full_turns.append(self.turn[i])
-            cur_state, cur_policy = flip_board(states[i]), flip_board(priors[i])
-            full_turns.append(self.turn[i])
-            full_states.append(cur_state)
-            full_priors.append(cur_policy)
-            for j in range(3):
-                cur_state = rotate_left(cur_state)
-                cur_policy = rotate_left(cur_policy)
-                full_states.append(cur_state)
-                full_priors.append(cur_policy)
-                full_turns.append(self.turn[i])
+            # todo flip board
+            # for j in range(3):
+            #     cur_state = rotate_left(cur_state)
+            #     cur_policy = rotate_left(cur_policy)
+            #     full_states.append(cur_state)
+            #     full_priors.append(cur_policy)
+            #     full_turns.append(self.turn[i])
+            # cur_state, cur_policy = flip_board(states[i]), flip_board(priors[i])
+            # full_turns.append(self.turn[i])
+            # full_states.append(cur_state)
+            # full_priors.append(cur_policy)
+            # for j in range(3):
+            #     cur_state = rotate_left(cur_state)
+            #     cur_policy = rotate_left(cur_policy)
+            #     full_states.append(cur_state)
+            #     full_priors.append(cur_policy)
+            #     full_turns.append(self.turn[i])
         full_outcomes = [self.outcome * full_turns[i] for i in range(len(full_states))]
 
         outcomes = torch.Tensor(full_outcomes).unsqueeze(1).unsqueeze(1).unsqueeze(1)

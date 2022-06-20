@@ -4,6 +4,7 @@ from utils.logger import logging
 import random
 import numpy as np
 from game import Game
+from variables import GRID_SIZE
 
 
 def get_move_prior(priors, move: Game.Move):
@@ -111,7 +112,9 @@ class Aux_MCTS:
 
     @staticmethod
     def get_policy(node: Aux_MCTS.Node):
-        grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]  # todo set to -1 illegal moves
+        grid = [
+            [0 for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)
+        ]  # todo set to -1 illegal moves?
         for n in node.subs:
             grid[n.move.x][n.move.y] = n.get_normalized_worth()
         return grid
@@ -123,11 +126,10 @@ class Aux_MCTS:
     @staticmethod
     def expand(node: Aux_MCTS.Node, prior_moves, game: Game):
         for move in game.get_available_moves():
-            new_game = game.__copy__()
-            new_game.set_mark(move)
+            new_state = game.get_marked_state(move)
             node.subs.add(
                 Aux_MCTS.Node(
-                    state=new_game.get_state(),
+                    state=new_state,
                     prior=get_move_prior(prior_moves, move),
                     parent=node,
                     move=move,

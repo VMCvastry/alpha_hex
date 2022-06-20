@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 
-from logger import logging
+from utils.logger import logging
 from game import Game
 from mcts.mcst import MCTS
 from net.trainer import Trainer
@@ -10,12 +10,11 @@ from variables import *
 
 
 def turn(game, move):
-    game.set_mark(move)
-    logging.debug(game)
-    if game.check_if_winner() is not None:
-        logging.debug("{} wins!".format(game.check_if_winner()))
-
-    return game.check_if_winner()
+    winner = game.set_mark(move)
+    logging.info(game)
+    if winner is not None:
+        logging.info("{} wins!".format(winner))
+    return winner
 
 
 def duel(trainer1: Trainer, trainer2: Trainer):

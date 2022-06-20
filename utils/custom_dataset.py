@@ -6,7 +6,8 @@ import torch
 from torch.utils.data import Dataset
 from pathlib import Path
 import dill
-from logger import logging
+from utils.logger import logging
+from variables import GRID_SIZE
 
 
 class CustomDataset(Dataset):
@@ -28,9 +29,9 @@ class CustomDataset(Dataset):
 
     def remove_duplicates(self):
         _, indexes = torch.unique(self.states, dim=0, return_inverse=True)
-        new_states = torch.zeros(_.size()[0], 2, 3, 3)
+        new_states = torch.zeros(_.size()[0], 2, GRID_SIZE, GRID_SIZE)
         new_values = torch.zeros(_.size()[0], 1, 1, 1)
-        new_policies = torch.zeros(_.size()[0], 3, 3)
+        new_policies = torch.zeros(_.size()[0], GRID_SIZE, GRID_SIZE)
         for i, index in enumerate(indexes):
             new_states[index] = self.states[i]
             new_values[index] = self.values[i]
