@@ -24,12 +24,9 @@ class ValueHead(nn.Module):
         x = self.conv(x)
         s = self.batch_norm(x)
         x = F.relu(s)
-        # x = x.view((-1, 9))  # grid to vector
-        # x = x.view(-1, 9)
-        # x = self.fcl1(x)
-        # x = F.relu(x)
-        # x = self.fcl2(x)
-        x = self.conv_replace_fcl(x)  # TODO WRONG should be the fcl but it doesnt train
+        x = x.view(-1, 9)  # grid to vector
+        x = self.fcl1(x)
+        x = F.relu(x)
+        x = self.fcl2(x)
         x = torch.tanh(x)
-        # x = self.fclT(x)
         return x

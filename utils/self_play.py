@@ -70,7 +70,7 @@ class PlayGame:
                 full_turns.append(self.turn[i])
         full_outcomes = [self.outcome * full_turns[i] for i in range(len(full_states))]
 
-        outcomes = torch.Tensor(full_outcomes).unsqueeze(1).unsqueeze(1).unsqueeze(1)
+        outcomes = torch.Tensor(full_outcomes).unsqueeze(1)
         states = torch.tensor(
             [
                 split_board(full_states[i], full_turns[i])
