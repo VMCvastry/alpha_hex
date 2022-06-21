@@ -30,7 +30,7 @@ class CustomDataset(Dataset):
     def remove_duplicates(self):
         _, indexes = torch.unique(self.states, dim=0, return_inverse=True)
         new_states = torch.zeros(_.size()[0], 2, GRID_SIZE, GRID_SIZE)
-        new_values = torch.zeros(_.size()[0], 1, 1, 1)
+        new_values = torch.zeros(_.size()[0], 1)
         new_policies = torch.zeros(_.size()[0], GRID_SIZE, GRID_SIZE)
         for i, index in enumerate(indexes):
             new_states[index] = self.states[i]
