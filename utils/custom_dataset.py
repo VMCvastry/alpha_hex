@@ -6,7 +6,7 @@ import torch
 from torch.utils.data import Dataset
 from pathlib import Path
 import dill
-from logger import logging
+from utils.logger import logging
 
 
 class CustomDataset(Dataset):

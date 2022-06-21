@@ -1,5 +1,5 @@
 from __future__ import annotations
-from logger import logging
+from utils.logger import logging
 from concurrent.futures import ThreadPoolExecutor
 
 from utils.custom_dataset import CustomDataset

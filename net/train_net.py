@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 
 from utils.custom_dataset import CustomDataset
 from variables import *
-from trainer import Trainer
+from net.trainer import Trainer
 
 from utils.logger import logging
 
@@ -24,9 +24,9 @@ def train_net(dataset_names: list[str], model_name):
     dataset: CustomDataset | None = None
     for i, name in enumerate(dataset_names):
         if i == 0:
-            dataset = CustomDataset.load("../training_data", name)
+            dataset = CustomDataset.load("./training_data", name)
         else:
-            dataset.append_dataset(CustomDataset.load("../training_data", name))
+            dataset.append_dataset(CustomDataset.load("./training_data", name))
     logging.info(f"dataset len: {dataset.__len__()}")
     train_set, test_set = torch.utils.data.random_split(
         dataset,

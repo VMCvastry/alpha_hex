@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 
-from logger import logging
+from utils.logger import logging
 from game import Game
 from mcts.mcst import MCTS
 from net.trainer import Trainer
