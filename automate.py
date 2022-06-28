@@ -10,47 +10,8 @@ from utils.logger import logging
 from utils.drive_explorer import DriveExplorer
 import os
 
-# fix value
-# speed duel
-
-
-# model_name = "NET_2022-04-14_09-29-42"
-# gen = 8
-# model_name = "NET_2022-04-16_11-16-31"
-# gen = 23
-# model_name = "NET_2022-04-16_18-02-38"
-# gen = 28
-# model_name = "NET_2022-04-17_09-05-35"
-# gen = 26
-# model_name = "NET_2022-04-18_08-02-57"
-# gen = 35
-# model_name = "NEW_NET_2022-04-21_09-32-57"
-# gen = 53
 from variables import OUTPUT_LABEL
 
-model_name = "FIXED_NET_2022-05-13_16-47-13"
-gen = 61
-model_name = "REBORN_NET_2022-05-31_23-52-28"
-gen = 13
-total_cycles = 27
-datasets = [
-    "gen23",
-    "FIXED_53",
-    "FIXED_60",
-    "FIXED_61",
-    "FIXED_62",
-    "FIXED_63",
-    "FIXED_64",
-]
-datasets = [
-    # "FIXED_61",
-    # "FIXED_62",
-    # "REBORN_8",
-    "REBORN_9",
-    "REBORN_10",
-    "REBORN_11",
-    "REBORN_12",
-]
 gen = 0
 total_cycles = 0
 datasets = [f"{OUTPUT_LABEL}_0"]
