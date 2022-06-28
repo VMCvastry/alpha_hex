@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 GRID_SIZE = 4
-OUTPUT_LABEL = "TRIS_FCL"
+OUTPUT_LABEL = "HEX"
 
 N_EPOCHS = 100
 BATCH_SIZE = 32
