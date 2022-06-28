@@ -51,14 +51,19 @@ datasets = [
 ]
 gen = 0
 total_cycles = 0
-datasets = ["WINNER_0"]
+datasets = ["TRIS_FCL_0"]
 model_name = ""
 save_drive = False
 COLAB = False
 if len(sys.argv) > 1:
     COLAB = True
     save_drive = True
-    if len(sys.argv) > 2:
+    if sys.argv[1] == "clean":
+        model_name = ""
+        gen = 0
+        total_cycles = 0
+        datasets = ["TRIS_FCL_0"]
+    elif len(sys.argv) > 2:
         model_name = sys.argv[1]
         gen = int(sys.argv[2])
         total_cycles = int(sys.argv[3])
