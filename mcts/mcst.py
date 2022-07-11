@@ -44,7 +44,9 @@ class MCTS:
         Aux_MCTS.normalize_layer(self.graph)
         move = Aux_MCTS.pick_best_move(self.graph, self.temperature)
         move.mark = self.player
-        return move, Aux_MCTS.get_policy(self.graph)
+        return Aux_MCTS.rotate_back_move(move, self.player), Aux_MCTS.rotate_right(
+            Aux_MCTS.get_policy(self.graph), self.player
+        )
 
     def step(self):
         self.total_simulations += 1

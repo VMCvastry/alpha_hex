@@ -11,9 +11,9 @@ from variables import *
 
 def turn(game, move):
     game.set_mark(move)
-    logging.info(game)
+    logging.debug(game)
     if game.winner is not None:
-        logging.info("{} wins!".format(game.winner))
+        logging.debug("{} wins!".format(game.winner))
     return game.winner
 
 
