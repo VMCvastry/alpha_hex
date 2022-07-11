@@ -10,11 +10,11 @@ from variables import *
 
 
 def turn(game, move):
-    winner = game.set_mark(move)
+    game.set_mark(move)
     logging.info(game)
-    if winner is not None:
-        logging.info("{} wins!".format(winner))
-    return winner
+    if game.winner is not None:
+        logging.info("{} wins!".format(game.winner))
+    return game.winner
 
 
 def duel(trainer1: Trainer, trainer2: Trainer):

@@ -19,7 +19,7 @@ class ValueHead(nn.Module):
         self.conv_replace_fcl = nn.Conv2d(
             in_channels=1, out_channels=1, kernel_size=GRID_SIZE
         )
-        self.fclT = nn.Linear(3 * 3, 1)
+        self.fclT = nn.Linear(GRID_SIZE * GRID_SIZE, 1)
 
     def forward(
         self,
@@ -28,7 +28,7 @@ class ValueHead(nn.Module):
         x = self.conv(x)
         s = self.batch_norm(x)
         x = F.relu(s)
-        x = x.view(-1, 9)  # grid to vector
+        x = x.view(-1, GRID_SIZE * GRID_SIZE)  # grid to vector
         x = self.fcl1(x)
         x = F.relu(x)
         x = self.fcl2(x)

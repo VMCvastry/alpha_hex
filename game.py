@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import copy
 import random
 
 from utils.logger import logging
@@ -22,16 +21,10 @@ class Game:
                 [Game.BoardCell(j, i, cell) for i, cell in enumerate(row)]
                 for j, row in enumerate(board)
             ]
-        for i in range(GRID_SIZE):
-            for j in range(GRID_SIZE):
-                self.board[i][j].neighbours = self.get_neighbours(i, j)
-        for i in range(GRID_SIZE):
-            for j in range(GRID_SIZE):
-                component_value = self.board[i][j].edge_connection()
-                if component_value and self.propagate_component(i, j, component_value):
-                    logging.critical("cloned finished game")
-                    self.winner = self.player * -1
-        if self.check_if_stale():
+        if self.check_if_won(self.player * -1):
+            self.winner = self.player * -1
+
+        elif self.check_if_stale():
             self.winner = self.player * -1
 
     def __copy__(self):
@@ -55,55 +48,52 @@ class Game:
             self.x = x
             self.y = y
             self.value = value
-            self.neighbours: list[Game.BoardCell] = []
-            self.component = None
-
-        def edge_connection(self):
-            if self.value == 0:
-                return False
-            if self.x == 0 and self.value == 1:
-                return "NORD"
-            if self.x == GRID_SIZE - 1 and self.value == 1:
-                return "SUD"
-
-            if self.y == 0 and self.value == -1:
-                return "EST"
-            if self.y == GRID_SIZE - 1 and self.value == -1:
-                return "OVEST"
-            for n in self.neighbours:
-                if n.component and self.value == n.value:
-                    return n.component
-            return False
+            self.visited = False
 
         def __str__(self):
             return str(self.value)
 
-    def propagate_component(self, x, y, component):
-        cell = self.board[x][y]
-        assert cell.value != 0
-        cell.component = component
-        for n in cell.neighbours:
-            if n.component is None and n.value == cell.value:
-                return self.propagate_component(n.x, n.y, component)
-            if (
-                n.component is not None
-                and n.value == cell.value
-                and n.component != component
-            ):
-                # print(n.component, component)
-                return True
+    def reset_cells(self):
+        for row in self.board:
+            for cell in row:
+                cell.visited = False
 
-    def set_mark(self, move: Move):
+    def is_connected(self, player, x, y):
+        queue = [self.board[x][y]]
+        while queue:
+            cell = queue[0]
+            queue = queue[1:]
+            cell.visited = True
+            neighbours = self.get_neighbours(cell.x, cell.y)
+            for n in neighbours:
+                if not n.visited and n.value == player:
+                    queue.append(n)
+                    if (n.x == (GRID_SIZE - 1) and player == 1) or (
+                        n.y == (GRID_SIZE - 1) and player == -1
+                    ):
+                        return True
+
+    def check_if_won(self, player):
+        self.reset_cells()
+        if player == 1:
+            for y in range(GRID_SIZE):
+                if self.board[0][y].value == 1 and self.is_connected(player, 0, y):
+                    return True
+        else:
+            for x in range(GRID_SIZE):
+                if self.board[x][0].value == -1 and self.is_connected(player, x, 0):
+                    return True
+
+    def set_mark(self, move: Move) -> None:
         assert move.mark == self.player
         self.board[move.x][move.y].value = move.mark
-        component_value = self.board[move.x][move.y].edge_connection()
-        if component_value and self.propagate_component(
-            move.x, move.y, component_value
-        ):
-            return move.mark
+        if self.check_if_won(self.player):
+            self.winner = self.player
+            return
         if self.check_if_stale():
             # logging.debug("{} wins!".format(winner))
-            return self.player
+            self.winner = self.player
+            return
         self.player = -1 * self.player
 
     def get_marked_state(self, move: Move) -> list[list[int]]:
@@ -170,10 +160,10 @@ class Game:
 if __name__ == "__main__":
 
     def turn(game, move):
-        winner = game.set_mark(move)
+        game.set_mark(move)
         logging.info(game)
-        if winner is not None:
-            logging.info("{} wins!".format(winner))
+        if game.winner is not None:
+            logging.info("{} wins!".format(game.winner))
             exit(1)
 
     game = Game(player=1)
