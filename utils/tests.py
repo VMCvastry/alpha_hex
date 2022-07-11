@@ -11,8 +11,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def turn(game, move):
     game.set_mark(move)
     logging.info(game)
-    if game.check_if_winner() is not None:
-        logging.info("{} wins!".format(game.check_if_winner()))
+    if game.winner is not None:
+        logging.info("{} wins!".format(game.winner))
 
 
 #
@@ -29,18 +29,6 @@ def test(trainer, game, player_turn):
     print(a)
     print(b)
 
-
-game = Game([[1, 0, 0], [1, -1, 0], [-1, 1, -1]])
-game = Game([[0, 1, 1], [-1, 0, 0], [0, 0, 0]])
-game = Game([[1, 0, 0], [-1, 1, 0], [-1, -1, 0]])
-game = Game([[0, 0, 1], [0, -1, -1], [0, 0, 1]])
-# game = Game([[-1, 1, 1], [-1, 0, 0], [1, 0, 0]])
-# game = Game([[-1, 0, -1], [1, 0, 0], [-1, 1, 1]])
-# game = Game([[-1, 0, 0], [0, 0, 1], [0, 0, 0]])
-
-
-game = Game([[0, -1, 1], [-1, -1, 1], [0, 1, 0]])
-game = Game([[-1, 0, -1], [1, 0, 0], [1, 1, -1]])
 
 player_turn = 1
 # print(game)
@@ -69,17 +57,11 @@ player_turn = 1
 
 # exit()
 # # new_trainer = Trainer(model_name="NEW_NET_2022-04-21_09-32-57_BEST")
-new_trainer = Trainer(model_name="REBORN_NET_2022-05-31_23-52-28")  # WRONG TRIS
-new_trainer2 = Trainer(model_name="REBORN_NET_2022-06-01_12-11-28")
-new_trainer3 = Trainer(model_name="REBORN_NET_2022-06-01_12-35-11")
-new_trainer4 = Trainer(model_name="REBORN_NET_2022-06-02_17-35-19")
+new_trainer = Trainer(model_name="HEX_NET_2022-07-11_21-36-39")
 game = Game(player=1)
 while 1:
     logging.info(new_trainer.poll(game.get_state(), player_turn))
-    logging.info(new_trainer2.poll(game.get_state(), player_turn))
-    logging.info(new_trainer3.poll(game.get_state(), player_turn))
-    logging.info(new_trainer4.poll(game.get_state(), player_turn))
-    player = MCTS(new_trainer4, game.get_state(), 1, exploration=1.4)
+    player = MCTS(new_trainer, game.get_state(), 1, exploration=1.4, temperature=0)
     a, b = player.search()
     logging.info(a)
     logging.info(b)

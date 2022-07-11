@@ -21,7 +21,12 @@ COLAB = False
 if len(sys.argv) > 1:
     COLAB = True
     save_drive = True
-    if len(sys.argv) > 2:
+    if sys.argv[1] == "clean":
+        model_name = ""
+        gen = 0
+        total_cycles = 0
+        datasets = [f"{OUTPUT_LABEL}_0"]
+    elif len(sys.argv) > 2:
         model_name = sys.argv[1]
         gen = int(sys.argv[2])
         total_cycles = int(sys.argv[3])
