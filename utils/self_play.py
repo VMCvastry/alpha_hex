@@ -87,8 +87,8 @@ def play_game_thread(trainer, data, n_game, lock):
     game = PlayGame(trainer)
     outcome = game.play()
     (states, outcomes, priors) = game.get_tensors()
-    data.append((states, outcomes, priors))
     lock.acquire()
+    data.append((states, outcomes, priors))
     n_game[0] += 1
     print(f"\rGame {n_game[0]}/{N_GAMES}", end=" ")
     lock.release()
@@ -106,9 +106,10 @@ def run_self_play(data_path, model_path):
     with ThreadPoolExecutor(max_workers=12) as executor:
         results = executor.map(
             play_game_thread,
-            [trainer] * N_GAMES,
+            [trainer]
+            * N_GAMES,  # Give the same object to all the threads, lock is used to increase the game counter and the data.
             [data] * N_GAMES,
-            n_game,
+            [n_game] * N_GAMES,
             [lock] * N_GAMES,
         )
     for result in results:
