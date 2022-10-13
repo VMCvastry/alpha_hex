@@ -61,9 +61,10 @@ class MCTS:
         Aux_MCTS.backprop(next_node, outcome)
 
     def simulate(self, node: Aux_MCTS.Node) -> int:
-        game = Game(node.state, player=node.get_next_player())
+        turn_player = node.get_next_player()
+        game = Game(node.state, player=turn_player)
         if game.winner is not None:
             return game.winner
-        moves, outcome = self.network.poll(node.state, node.get_next_player())
+        moves, outcome = self.network.poll(node.state, turn_player)
         Aux_MCTS.expand(node, moves, game)
-        return node.get_next_player() * outcome
+        return turn_player * outcome

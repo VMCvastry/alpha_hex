@@ -108,7 +108,7 @@ def run_self_play(data_path, model_path):
             play_game_thread,
             [trainer] * N_GAMES,
             [data] * N_GAMES,
-            [n_game] * N_GAMES,
+            n_game,
             [lock] * N_GAMES,
         )
     for result in results:

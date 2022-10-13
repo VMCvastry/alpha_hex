@@ -31,7 +31,7 @@ class Game:
         logging.critical(" Should not clone")
         raise NotImplementedError
 
-    def get_state(self):
+    def get_state(self) -> list[list[int]]:
         return [[cell.value if cell else 0 for cell in row] for row in self.board]
 
     class Move:
