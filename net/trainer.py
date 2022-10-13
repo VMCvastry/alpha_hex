@@ -38,7 +38,7 @@ def real_loss(predicted_value, value, predicted_policy, policy):
     )
     # todo mean separately or all together?
     return (
-        value_loss + policy_loss,
+        value_loss + 2 * policy_loss,
         value_loss.detach(),
         policy_loss.detach(),
     )  # todo check if not messing with grad
@@ -222,5 +222,5 @@ class Trainer:
         )  # add batch dimension
         with torch.no_grad():
             self.model.eval()
-            policy, value = self.model(processed_data)
+            policy, value = self.model(processed_data)  # super slow during self play.
         return policy.squeeze(0), value.squeeze(0)  # remove batch dimension
