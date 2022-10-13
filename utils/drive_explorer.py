@@ -9,7 +9,9 @@ class DriveExplorer:
             from pydrive2.drive import GoogleDrive
 
             gauth = GoogleAuth()
-            gauth.LocalWebserverAuth()  # Creates local webserver and auto handles authentication.
+            gauth.LocalWebserverAuth(
+                launch_browser=False
+            )  # Creates local webserver and auto handles authentication.
             self.drive = GoogleDrive(gauth)
             self.TRIS_FOLDER = "1omRd2PjeBoyBWqONqMjkBQSIljeBTtoO"
             self.training_data_folder = "17NUE-oiWUElF_oI6g0j51VSdqWAJS3JQ"
