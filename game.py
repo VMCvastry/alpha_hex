@@ -3,7 +3,19 @@ from __future__ import annotations
 import random
 
 from utils.logger import logging
-from variables import GRID_SIZE
+from variables import GRID_SIZE, HEX_GRID_SIZE
+
+"""
+Magic number:
+top squares num 8, so 8%(6+1)=1 ->start
+bottom squares num 9, so 9%(6+1)=2 ->end
+left squares num 5, so 5%(6-1)=1 ->start
+bottom squares num 6, so 6%(6-1)=2 ->end
+top left num 36
+top right num 22
+bbot left num 16
+bot right num 37
+"""
 
 
 class Game:
@@ -11,16 +23,12 @@ class Game:
         self.board: list[list[Game.BoardCell]]
         self.winner = None
         self.player = player
-        if board is None:
-            self.board = [
-                [Game.BoardCell(j, i) for i in range(GRID_SIZE)]
-                for j in range(GRID_SIZE)
-            ]
-        else:
-            self.board = [
-                [Game.BoardCell(j, i, cell) for i, cell in enumerate(row)]
-                for j, row in enumerate(board)
-            ]
+        self.build_board()
+        if board is not None:
+            for i, row in enumerate(board):
+                for j, cell in enumerate(row):
+                    self.board[i][j].value = cell
+
         if self.check_if_won(self.player * -1):
             self.winner = self.player * -1
 
@@ -49,9 +57,36 @@ class Game:
             self.y = y
             self.value = value
             self.visited = False
+            self.valid = False
+            self.magic = 0
 
         def __str__(self):
             return str(self.value)
+
+    def build_board(self):
+        self.board = [
+            [Game.BoardCell(j, i) for i in range(GRID_SIZE)] for j in range(GRID_SIZE)
+        ]
+        for i, row in enumerate(self.board):
+            if not (i % 3):
+                for j in range(i // 3, GRID_SIZE - (HEX_GRID_SIZE - 1) + i // 3, 2):
+                    row[j].valid = True
+                    if i == 0 and j == 0:
+                        row[j].magic = 36
+                    elif i == 0 and j == GRID_SIZE - (HEX_GRID_SIZE - 1) - 1:
+                        row[j].magic = 22
+                    elif i == GRID_SIZE - 1 and j == (HEX_GRID_SIZE - 1):
+                        row[j].magic = 16
+                    elif i == GRID_SIZE - 1 and j == GRID_SIZE - 1:
+                        row[j].magic = 37
+                    elif i == 0:
+                        row[j].magic = 8
+                    elif i == GRID_SIZE - 1:
+                        row[j].magic = 9
+                    elif j == i // 3:
+                        row[j].magic = 5
+                    elif j == GRID_SIZE - (HEX_GRID_SIZE - 1) + i // 3 - 1:
+                        row[j].magic = 6
 
     def reset_cells(self):
         for row in self.board:
@@ -68,21 +103,19 @@ class Game:
             for n in neighbours:
                 if not n.visited and n.value == player:
                     queue.append(n)
-                    if (n.x == (GRID_SIZE - 1) and player == 1) or (
-                        n.y == (GRID_SIZE - 1) and player == -1
-                    ):
+                    if n.magic % (6 + player) == 2:
                         return True
 
     def check_if_won(self, player):
         self.reset_cells()
-        if player == 1:
-            for y in range(GRID_SIZE):
-                if self.board[0][y].value == 1 and self.is_connected(player, 0, y):
-                    return True
-        else:
-            for x in range(GRID_SIZE):
-                if self.board[x][0].value == -1 and self.is_connected(player, x, 0):
-                    return True
+        for i in range(GRID_SIZE):
+            for j in range(GRID_SIZE):
+                if (
+                    self.board[i][j].value == player
+                    and self.board[i][j].magic % (6 + player) == 1
+                ):
+                    if self.is_connected(player, i, j):
+                        return True
 
     def set_mark(self, move: Move) -> None:
         assert move.mark == self.player
@@ -105,7 +138,7 @@ class Game:
 
         if all(
             (
-                self.board[x][y].value != 0
+                self.board[x][y].value != 0 or not self.board[x][y].valid
                 for x in range(GRID_SIZE)
                 for y in range(GRID_SIZE)
             )
@@ -117,26 +150,31 @@ class Game:
         moves = set()
         for i in range(GRID_SIZE):
             for j in range(GRID_SIZE):
-                if self.board[i][j] and self.board[i][j].value == 0:
+                if (
+                    # self.board[i][j] and
+                    self.board[i][j].value == 0
+                    and self.board[i][j].valid
+                ):
                     moves.add(Game.Move(i, j, self.player))
         return moves
 
-    def get_neighbours(self, x, y) -> list[Game.BoardCell]:
+    def get_neighbours(self, i, j) -> list[Game.BoardCell]:
         neighbours = []
-        for i in range(x - 1, x + 2):
-            for j in range(y - 1, y + 2):
-                if (
-                    0 <= i < GRID_SIZE
-                    and 0 <= j < GRID_SIZE
-                    and (i, j) != (x, y)
-                    and (i, j) != (x + 1, y + 1)
-                    and (i, j) != (x - 1, y - 1)
-                    and (i, j) != (x + 1, y - 1)
-                    and (i, j) != (x - 1, y + 1)
-                    and self.board[i][j]
-                ):
-                    if self.board[i][j]:
-                        neighbours.append(self.board[i][j])
+        possible = [
+            (i, j - 2),
+            (i, j + 2),
+            (i + 3, j - 1),
+            (i + 3, j + 1),
+            (i - 3, j - 1),
+            (i - 3, j + 1),
+        ]
+        for p_i, p_j in possible:
+            if (
+                0 <= p_j < GRID_SIZE
+                and 0 <= p_i < GRID_SIZE
+                and self.board[p_i][p_j].valid
+            ):
+                neighbours.append(self.board[p_i][p_j])
         return neighbours
 
     def __repr__(self):
@@ -146,7 +184,9 @@ class Game:
                 [
                     str(
                         [
-                            self.board[x][y].value if self.board[x][y] else 0
+                            str(self.board[x][y].value)
+                            if self.board[x][y].valid
+                            else " "
                             for y in range(GRID_SIZE)
                         ]
                     )
