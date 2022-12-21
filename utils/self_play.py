@@ -11,13 +11,13 @@ import torch
 import threading
 
 
-def rotate_left(board: list[list[int]]):
-    return [list(reversed(row)) for row in zip(*board)]
-    # return torch.cat([board[:,:,1:], board[:,:,:1]], dim=2)
-
-
-def flip_board(board: list[list[int]]):
-    return [list(reversed(row)) for row in board]
+# def rotate_left(board: list[list[int]]):
+#     return [list(reversed(row)) for row in zip(*board)]
+#     # return torch.cat([board[:,:,1:], board[:,:,:1]], dim=2)
+#
+#
+# def flip_board(board: list[list[int]]):
+#     return [list(reversed(row)) for row in board]
 
 
 class PlayGame:

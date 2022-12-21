@@ -61,33 +61,33 @@ class Aux_MCTS:
         def __repr__(self):
             return f"{self.move}, mean_value={self.get_mean_value()},value {self.value}, visits={round(self.visits)}, interest={self.interest(5)}"
 
-    @staticmethod
-    def rotate_back_move(move: Game.Move, player):
-        if player == -1:
-            return Game.Move(abs(move.y - (GRID_SIZE - 1)), move.x, player)
-        else:
-            return move
+    # @staticmethod
+    # def rotate_back_move(move: Game.Move, player):
+    #     if player == -1:
+    #         return Game.Move(abs(move.y - (GRID_SIZE - 1)), move.x, player)
+    #     else:
+    #         return move
+    #
+    # @staticmethod
+    # def rotate_left(board: list[list[int]], player):
+    #     return [list(reversed(row)) for row in zip(*board)] if player == -1 else board
+    #
+    # @staticmethod
+    # def rotate_right(board: list[list[int]], player):
+    #     return (
+    #         Aux_MCTS.rotate_left(
+    #             Aux_MCTS.rotate_left(Aux_MCTS.rotate_left(board, player), player),
+    #             player,
+    #         )
+    #         if player == -1
+    #         else board
+    #     )
 
-    @staticmethod
-    def rotate_left(board: list[list[int]], player):
-        return [list(reversed(row)) for row in zip(*board)] if player == -1 else board
-
-    @staticmethod
-    def rotate_right(board: list[list[int]], player):
-        return (
-            Aux_MCTS.rotate_left(
-                Aux_MCTS.rotate_left(Aux_MCTS.rotate_left(board, player), player),
-                player,
-            )
-            if player == -1
-            else board
-        )
-
-    @staticmethod
-    def flip_state(state, player):
-        return Aux_MCTS.rotate_left(
-            [[player * s for s in row] for row in state], player
-        )
+    # @staticmethod
+    # def flip_state(state, player):
+    #     return Aux_MCTS.rotate_left(
+    #         [[player * s for s in row] for row in state], player
+    #     )
 
     @staticmethod
     def pick_best_move(node: Aux_MCTS.Node, temperature):

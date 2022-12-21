@@ -4,6 +4,7 @@ import time
 from collections import Counter
 
 from game import Game
+from utils.flip_board import flip_correct_state, flip_correct_point
 from .mcst_aux import Aux_MCTS
 from variables import *
 
@@ -19,7 +20,7 @@ class MCTS:
         self.network = network
         self.player = player
         self.graph: Aux_MCTS.Node = Aux_MCTS.Node(
-            state=Aux_MCTS.flip_state(init_state, player),
+            state=flip_correct_state(init_state, player),
             prior=-1,
             parent=None,
             move=None,
@@ -44,8 +45,9 @@ class MCTS:
         Aux_MCTS.normalize_layer(self.graph)
         move = Aux_MCTS.pick_best_move(self.graph, self.temperature)
         move.mark = self.player
-        return Aux_MCTS.rotate_back_move(move, self.player), Aux_MCTS.rotate_right(
-            Aux_MCTS.get_policy(self.graph), self.player
+        return (
+            Game.Move(*flip_correct_point(move, self.player), self.player),
+            flip_correct_state(Aux_MCTS.get_policy(self.graph), self.player),
         )
 
     def step(self):
