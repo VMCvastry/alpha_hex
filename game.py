@@ -9,11 +9,11 @@ from variables import GRID_SIZE, HEX_GRID_SIZE
 Magic number:
 top squares num 8, so 8%(6+1)=1 ->start
 bottom squares num 9, so 9%(6+1)=2 ->end
-left squares num 5, so 5%(6-1)=1 ->start
-bottom squares num 6, so 6%(6-1)=2 ->end
+left squares num 6, so 6%(6-1)=1 ->start
+right squares num 7, so 7%(6-1)=2 ->end
 top left num 36
 top right num 22
-bbot left num 16
+bot left num 16
 bot right num 37
 """
 
@@ -84,9 +84,9 @@ class Game:
                     elif i == GRID_SIZE - 1:
                         row[j].magic = 9
                     elif j == i // 3:
-                        row[j].magic = 5
-                    elif j == GRID_SIZE - (HEX_GRID_SIZE - 1) + i // 3 - 1:
                         row[j].magic = 6
+                    elif j == GRID_SIZE - (HEX_GRID_SIZE - 1) + i // 3 - 1:
+                        row[j].magic = 7
 
     def reset_cells(self):
         for row in self.board:
@@ -206,17 +206,48 @@ if __name__ == "__main__":
             logging.info("{} wins!".format(game.winner))
             exit(1)
 
-    game = Game(player=1)
-    while 1:
-        logging.info("Player 1:")
-        # logging.info([str(g) for g in game.get_available_moves()])
-        # x, y = map(int, input(":").split(" "))
-        # move = Game.Move(x, y, 1)
-        move = random.choice(list(game.get_available_moves()))
-        turn(game, move)
+    # game = Game(player=1)
+    # while 1:
+    #     logging.info("Player 1:")
+    #     # logging.info([str(g) for g in game.get_available_moves()])
+    #     # x, y = map(int, input(":").split(" "))
+    #     # move = Game.Move(x, y, 1)
+    #     move = random.choice(list(game.get_available_moves()))
+    #     turn(game, move)
+    #
+    #     logging.info("Player -1:")
+    #     # x, y = map(int, input(":").split(" "))
+    #     # move = Game.Move(x, y, -1)
+    #     move = random.choice(list(game.get_available_moves()))
+    #     turn(game, move)
+    g = [
+        [0, 0, -1, 0, -1, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, -1, 0, 0, 0, 1, 0, -1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, -1, 0, 1, 0, 1, 0, -1],
+    ]
+    g = [
+        [0, 0, 0, 0, 1, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0, -1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0, -1, 0, -1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, -1, 0, 0, 0, 1, 0, 0],
+    ]
 
-        logging.info("Player -1:")
-        # x, y = map(int, input(":").split(" "))
-        # move = Game.Move(x, y, -1)
-        move = random.choice(list(game.get_available_moves()))
-        turn(game, move)
+    p = Game(player=-1, board=g)
+    print(p)
+    print(p.winner)
+    p.set_mark(Game.Move(9, 5, -1))
+    print(p)
+    print(p.winner)

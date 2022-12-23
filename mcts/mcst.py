@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import time
 from collections import Counter
 
@@ -41,12 +42,12 @@ class MCTS:
             and time.time() - self.start_time < TIME_CAP
         ):
             self.step()
-            # print(Aux_MCTS.pick_best_move(self.graph))
+            # logging.debug(Aux_MCTS.pick_best_move(self.graph, self.temperature))
         Aux_MCTS.normalize_layer(self.graph)
         move = Aux_MCTS.pick_best_move(self.graph, self.temperature)
         move.mark = self.player
         return (
-            Game.Move(*flip_correct_point(move, self.player), self.player),
+            Game.Move(*flip_correct_point(move.x, move.y, self.player), self.player),
             flip_correct_state(Aux_MCTS.get_policy(self.graph), self.player),
         )
 

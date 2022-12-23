@@ -38,12 +38,14 @@ def flip_correct_state(state: list[list[int]], player) -> list[list[int]]:
 
 def flip_point(x, y):
     new_y = (x // 3) * 2
-    new_x = (y // 2) * 3
+    new_x = ((y - x // 3) // 2) * 3
     return new_x, new_x // 3 + new_y
 
 
 # Flips a move if the player is -1
 def flip_correct_point(x, y, player):
+    # print(x, y)
+    # print(flip_point(x, y) if player == -1 else (x, y))
     return flip_point(x, y) if player == -1 else (x, y)
 
 
@@ -57,6 +59,18 @@ if __name__ == "__main__":
     board[3][1] = 3
     board[3][3] = 4
     board[2][2] = 5
+    board = [
+        ["0", " ", "0", " ", "0", " ", "0", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", "0", " ", "0", " ", "0", " ", "0", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", "1", " ", "0", " ", "0", " ", "0", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", "0", " ", "0", " ", "-1", " ", "0"],
+    ]
     [print(x) for x in board]
     move = (3, 1)
     print(move)
