@@ -105,19 +105,19 @@ def run_self_play(data_path, model_path):
     data = []
     n_game = [0]
     lock = threading.Lock()
-    for _ in range(N_GAMES):
-        play_game_thread(trainer, data, n_game, lock)
-    # with ThreadPoolExecutor(max_workers=12) as executor:
-    #     results = executor.map(
-    #         play_game_thread,
-    #         [trainer]
-    #         * N_GAMES,  # Give the same object to all the threads, lock is used to increase the game counter and the data.
-    #         [data] * N_GAMES,
-    #         [n_game] * N_GAMES,
-    #         [lock] * N_GAMES,
-    #     )
-    # for result in results:
-    #     pass  # required otherwise the interpreter wont execute them
+    # for _ in range(N_GAMES):
+    #     play_game_thread(trainer, data, n_game, lock)
+    with ThreadPoolExecutor(max_workers=12) as executor:
+        results = executor.map(
+            play_game_thread,
+            [trainer]
+            * N_GAMES,  # Give the same object to all the threads, lock is used to increase the game counter and the data.
+            [data] * N_GAMES,
+            [n_game] * N_GAMES,
+            [lock] * N_GAMES,
+        )
+    for result in results:
+        pass  # required otherwise the interpreter wont execute them
     for i in range(len(data)):
         if i == 0:
             data_set = CustomDataset(data[i][0], data[i][1], data[i][2])
@@ -125,7 +125,7 @@ def run_self_play(data_path, model_path):
             data_set.append(data[i][0], data[i][1], data[i][2])
     logging.warning("Finished self play")
     logging.info(f"dataset size: {data_set.__len__()}")
-    # data_set.store("./training_data", data_path)
+    data_set.store("./training_data", data_path)
 
 
 if __name__ == "__main__":
