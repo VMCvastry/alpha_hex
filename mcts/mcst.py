@@ -48,7 +48,9 @@ class MCTS:
         move.mark = self.player
         return (
             Game.Move(*flip_correct_point(move.x, move.y, self.player), self.player),
-            flip_correct_state(Aux_MCTS.get_policy(self.graph), self.player),
+            flip_correct_state(
+                Aux_MCTS.get_policy(self.graph), self.player, flip_sign=False
+            ),
         )
 
     def step(self):

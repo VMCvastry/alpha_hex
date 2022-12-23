@@ -32,8 +32,10 @@ def flip(board: list[list[int]], flip_sign=True) -> list[list[int]]:
 
 
 # Flips a board if the player is -1
-def flip_correct_state(state: list[list[int]], player) -> list[list[int]]:
-    return flip(state) if player == -1 else state
+def flip_correct_state(
+    state: list[list[int]], player, flip_sign=True
+) -> list[list[int]]:
+    return flip(state, flip_sign) if player == -1 else state
 
 
 def flip_point(x, y):
