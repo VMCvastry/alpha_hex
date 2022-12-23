@@ -7,19 +7,20 @@ from torch import optim
 from matplotlib import pyplot as plt
 
 from net.net import NET
+from utils.flip_board import flip_correct_state
 from variables import *
 from utils.logger import logging
 
 
-def split_board(state, player):  # todo when to switch?
-    current_player_plane = [[1 if x == player else 0 for x in y] for y in state]
-    second_plane = [[1 if x == -1 * player else 0 for x in y] for y in state]
+def split_board(state):
+    current_player_plane = [[1 if x == 1 else 0 for x in y] for y in state]
+    second_plane = [[1 if x == -1 else 0 for x in y] for y in state]
     return [current_player_plane, second_plane]
 
 
 def process_state(state, player: int) -> torch.Tensor:
     data = torch.tensor(
-        split_board(state, player),
+        split_board(flip_correct_state(state, player)),
         dtype=torch.float32,
     )
     return data
@@ -30,8 +31,8 @@ def crap_loss(predicted_value, value, predicted_policy, policy):
 
 
 def real_loss(predicted_value, value, predicted_policy, policy):
-    policy_vector = policy.reshape((-1, GRID_SIZE ** 2))  # grid to vector
-    predicted_policy_vector = predicted_policy.reshape((-1, GRID_SIZE ** 2))
+    policy_vector = policy.reshape((-1, GRID_SIZE**2))  # grid to vector
+    predicted_policy_vector = predicted_policy.reshape((-1, GRID_SIZE**2))
     value_loss = torch.mean((value - predicted_value) ** 2)
     policy_loss = torch.mean(
         -torch.sum(policy_vector * torch.log(predicted_policy_vector), 1)

@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from utils.flip_board import flip_correct_state
 from utils.logger import logging
 from concurrent.futures import ThreadPoolExecutor
 
@@ -77,7 +79,7 @@ class PlayGame:
         outcomes = torch.Tensor(full_outcomes).unsqueeze(1)
         states = torch.tensor(
             [
-                split_board(full_states[i], full_turns[i])
+                split_board(flip_correct_state(full_states[i], full_turns[i]))
                 for i in range(len(full_states))
             ],
             dtype=torch.float32,
