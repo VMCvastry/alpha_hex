@@ -2,7 +2,7 @@ from __future__ import annotations
 
 HEX_GRID_SIZE = 4
 GRID_SIZE = 3 * HEX_GRID_SIZE - 2
-OUTPUT_LABEL = "1_HHEX"
+OUTPUT_LABEL = "R_1_HEX"
 
 N_EPOCHS = 100
 BATCH_SIZE = 32
