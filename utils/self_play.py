@@ -84,7 +84,13 @@ class PlayGame:
             ],
             dtype=torch.float32,
         )
-        priors = torch.tensor(full_priors)
+        priors = torch.tensor(
+            [
+                flip_correct_state(full_priors[i], full_turns[i], False)
+                for i in range(len(full_priors))
+            ],
+            dtype=torch.float32,
+        )
         return states, outcomes, priors
 
 
