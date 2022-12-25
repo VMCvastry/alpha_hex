@@ -39,7 +39,7 @@ def real_loss(predicted_value, value, predicted_policy, policy):
     )
     # todo mean separately or all together?
     return (
-        value_loss + 2 * policy_loss,
+        value_loss**2 + 2 * policy_loss,
         value_loss.detach(),
         policy_loss.detach(),
     )  # todo check if not messing with grad

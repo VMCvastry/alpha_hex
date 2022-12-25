@@ -13,9 +13,11 @@ import torch
 import threading
 
 
-# def rotate_left(board: list[list[int]]):
-#     return [list(reversed(row)) for row in zip(*board)]
-#     # return torch.cat([board[:,:,1:], board[:,:,:1]], dim=2)
+def rotate_left(board: list[list[int]]):
+    return [list(reversed(row)) for row in zip(*board)]
+    # return torch.cat([board[:,:,1:], board[:,:,:1]], dim=2)
+
+
 #
 #
 # def flip_board(board: list[list[int]]):
@@ -57,6 +59,11 @@ class PlayGame:
             full_turns.append(self.turn[i])
             full_states.append(cur_state)
             full_priors.append(cur_policy)
+            cur_state = rotate_left(rotate_left(cur_state))
+            cur_policy = rotate_left(rotate_left(cur_policy))
+            full_states.append(cur_state)
+            full_priors.append(cur_policy)
+            full_turns.append(self.turn[i])
             # todo flip board
             # for j in range(3):
             #     cur_state = rotate_left(cur_state)
