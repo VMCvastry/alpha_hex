@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import random
 import time
 
 from net.train_net import train_net
@@ -44,8 +45,12 @@ temp = 0
 while 1:
     logging.info(f"GEN: {gen}, model: {model_name}, total:{total_cycles}")
     if not temp:
-        run_self_play(f"{OUTPUT_LABEL}_{gen}", model_name)
-    # datasets = datasets[-10:]
+        run_self_play(f"{OUTPUT_LABEL}_{total_cycles}", model_name)
+        if save_drive:
+            drive.save_training_data(datasets[-1])
+        datasets.append(f"{OUTPUT_LABEL}_{total_cycles}")
+    if random.randint(0, 1):
+        datasets = datasets[1:]
     new_model_name = train_net(datasets, model_name)
 
     res = find_best(new_model_name, model_name)
@@ -53,9 +58,7 @@ while 1:
         model_name = new_model_name
         if save_drive:
             drive.save_model(model_name)
-            drive.save_training_data(datasets[-1])
         gen += 1
-        datasets.append(f"{OUTPUT_LABEL}_{gen}")
     else:
         logging.info("No improvement")
         if os.path.exists(f"models/{new_model_name}.pt"):
