@@ -21,20 +21,14 @@ def duel(trainer1: Trainer, trainer2: Trainer):
     game = Game()
     while 1:
         player = MCTS(
-            trainer1,
-            game.get_state(),
-            game.player,
-            exploration=1.4,
+            trainer1, game.get_state(), game.player, exploration=1.4, temperature=1
         )
         move, _ = player.search()
         res = turn(game, move)
         if res is not None:
             return res
         player = MCTS(
-            trainer2,
-            game.get_state(),
-            game.player,
-            exploration=1.4,
+            trainer2, game.get_state(), game.player, exploration=1.4, temperature=1
         )
         move, _ = player.search()
         res = turn(game, move)
