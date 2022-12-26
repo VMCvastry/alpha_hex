@@ -18,6 +18,10 @@ bot right num 37
 """
 
 
+def discard_rows_for_print(state):
+    return [s for i, s in enumerate(state) if i % 3 == 0]
+
+
 class Game:
     def __init__(self, board: list = None, player=1):
         self.board: list[list[Game.BoardCell]]
@@ -181,17 +185,19 @@ class Game:
         return (
             "\n"
             + "\n".join(
-                [
-                    str(
-                        [
-                            str(self.board[x][y].value)
-                            if self.board[x][y].valid
-                            else " "
-                            for y in range(GRID_SIZE)
-                        ]
-                    )
-                    for x in range(GRID_SIZE)
-                ]
+                discard_rows_for_print(
+                    [
+                        str(
+                            [
+                                str(self.board[x][y].value)
+                                if self.board[x][y].valid
+                                else " "
+                                for y in range(GRID_SIZE)
+                            ]
+                        )
+                        for x in range(GRID_SIZE)
+                    ]
+                )
             )
             + "\n"
         )
@@ -244,10 +250,28 @@ if __name__ == "__main__":
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, -1, 0, 0, 0, 1, 0, 0],
     ]
+    g = [
+        [0, 0, 0, 0, -1, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, -1, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, -1, 0, 1, 0, 1, 0, -1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, -1, 0, -1, 0, 1, 0, 0],
+    ]
+    p = Game(player=1, board=g)
+    print(p)
+    print(p.winner)
 
-    p = Game(player=-1, board=g)
-    print(p)
-    print(p.winner)
-    p.set_mark(Game.Move(9, 5, -1))
-    print(p)
-    print(p.winner)
+    def rotate_left(board: list[list[int]]):
+        return [list(reversed(row)) for row in zip(*board)]
+
+    gg = rotate_left(rotate_left(g))
+    pp = Game(player=1, board=gg)
+    print(pp)
+    # p.set_mark(Game.Move(9, 5, -1))
+    # print(p)
+    # print(p.winner)
