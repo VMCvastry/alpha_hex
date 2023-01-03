@@ -21,14 +21,24 @@ def duel(trainer1: Trainer, trainer2: Trainer):
     game = Game()
     while 1:
         player = MCTS(
-            trainer1, game.get_state(), game.player, exploration=1.4, temperature=1
+            trainer1,
+            game.get_state(),
+            game.player,
+            exploration=1.4,
+            temperature=1,
+            simulations_cap=1,
         )
         move, _ = player.search()
         res = turn(game, move)
         if res is not None:
             return res
         player = MCTS(
-            trainer2, game.get_state(), game.player, exploration=1.4, temperature=1
+            trainer2,
+            game.get_state(),
+            game.player,
+            exploration=1.4,
+            temperature=1,
+            simulations_cap=1,
         )
         move, _ = player.search()
         res = turn(game, move)
@@ -70,4 +80,7 @@ if __name__ == "__main__":
 
     model_1 = "REBORN_NET_2022-06-02_17-35-19"
     model_2 = "WINNER_NET_2022-06-03_18-16-50"
+
+    model_1 = "R_3_HEX_NET_2022-12-26_05-17-54"
+    model_2 = "R_3_HEX_NET_2022-12-27_06-37-56"
     print(find_best(model_1, model_2))

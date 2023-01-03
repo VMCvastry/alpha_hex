@@ -132,8 +132,13 @@ class Aux_MCTS:
         #         n.normalized_value = (n.value + abs(minimum)) / total
         # logging.debug(f"total {[n.get_normalized_value() for n in node.subs]}")
         total = sum(n.visits for n in node.subs)
-        for n in node.subs:
-            n.normalized_value = n.visits / total
+        if total:
+            for n in node.subs:
+                n.normalized_value = n.visits / total
+        else:  # only one simulation done, using priors
+            total = sum(n.prior for n in node.subs)
+            for n in node.subs:
+                n.normalized_value = n.prior / total
         # logging.debug(f"visits {[n.get_normalized_value() for n in node.subs]}")
 
     @staticmethod

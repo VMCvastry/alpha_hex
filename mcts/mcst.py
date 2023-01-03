@@ -9,8 +9,6 @@ from utils.flip_board import flip_correct_state, flip_correct_point
 from .mcst_aux import Aux_MCTS
 from variables import *
 
-SIMULATIONS_CAP = 100
-TIME_CAP = 100000000000
 
 # todo question page 26 alpha go zero
 
@@ -33,12 +31,15 @@ class MCTS:
             exploration = EXPLORATION_PARAMETER
         if temperature is None:
             temperature = TEMPERATURE
+        if simulations_cap is None:
+            simulations_cap = SIMULATIONS_CAP
+        self.simulation_cap = simulations_cap
         self.temperature = temperature
         self.exploration = exploration
 
     def search(self) -> tuple[Game.Move, list[list]]:
         while (
-            self.total_simulations <= SIMULATIONS_CAP
+            self.total_simulations < self.simulation_cap
             and time.time() - self.start_time < TIME_CAP
         ):
             self.step()
