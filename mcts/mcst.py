@@ -34,7 +34,6 @@ class MCTS:
             move=None,
         )
         self.stage, total_stages = Game(init_state, player).get_stage()
-        print(f"Stage: {self.stage}/{total_stages}")
         # todo dirichlet noise on first move
         self.total_simulations = 0
         self.start_time = time.time()
