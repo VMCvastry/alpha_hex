@@ -14,7 +14,16 @@ from variables import *
 
 
 class MCTS:
-    def __init__(self, network, init_state, player, exploration=None, temperature=None):
+    def __init__(
+        self,
+        network,
+        init_state,
+        player,
+        exploration=None,
+        temperature=None,
+        simulations_cap=None,
+        time_cap=None,
+    ):
         # todo temperature ->0
         self.network = network
         self.player = player
@@ -24,6 +33,8 @@ class MCTS:
             parent=None,
             move=None,
         )
+        self.stage, total_stages = Game(init_state, player).get_stage()
+        print(f"Stage: {self.stage}/{total_stages}")
         # todo dirichlet noise on first move
         self.total_simulations = 0
         self.start_time = time.time()
@@ -45,7 +56,9 @@ class MCTS:
             self.step()
             # logging.debug(Aux_MCTS.pick_best_move(self.graph, self.temperature))
         Aux_MCTS.normalize_layer(self.graph)
-        move = Aux_MCTS.pick_best_move(self.graph, self.temperature)
+        move = Aux_MCTS.pick_best_move(
+            self.graph, self.temperature if self.stage > 1 else 4 - self.stage
+        )  # To recognize first and second move
         move.mark = self.player
         return (
             Game.Move(*flip_correct_point(move.x, move.y, self.player), self.player),

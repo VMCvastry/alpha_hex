@@ -106,6 +106,10 @@ class Aux_MCTS:
             )[0]
             if temperature == 2 and random.random() < 0.2:
                 best_node = random.choice(list(node.subs))
+            elif temperature == 3 and random.random() < 0.5:
+                best_node = random.choice(list(node.subs))
+            elif temperature == 4 and random.random() < 0.8:
+                best_node = random.choice(list(node.subs))
         else:
             best_node = max(node.subs, key=lambda x: x.get_normalized_worth())
         return best_node.move

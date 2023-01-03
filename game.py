@@ -181,6 +181,12 @@ class Game:
                 neighbours.append(self.board[p_i][p_j])
         return neighbours
 
+    def get_stage(self) -> tuple[int, int]:
+        return (
+            sum([sum([abs(cell.value) for cell in row]) for row in self.board]),
+            HEX_GRID_SIZE**2,
+        )
+
     def __repr__(self):
         return (
             "\n"
