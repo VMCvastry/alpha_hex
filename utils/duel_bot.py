@@ -23,11 +23,26 @@ def turn(game, move):
 
 def duel(trainer, time_limit):
     player_turn = 1
-    game = Game(player=player_turn)
+    game = Game(player=player_turn * -1)
     agent = mctsagent()
     interface = gtpinterface(agent, time_limit)
     interface.send_command(f"size {HEX_GRID_SIZE}")
     while 1:
+        # player bot
+        res, move = interface.send_command(
+            f"genmove {'w' if game.player == -1 else 'b'}"
+        )
+        if not res:
+            logging.info("Game over")
+
+        y, x = move
+        logging.info(f"bot move = {x} {y}")
+        move = Game.Move(x * 3, y * 2 + x, -1)
+        # move = random.choice(list(game.get_available_moves()))
+        if turn(game, move) is not None:
+            return turn(game, move)
+
+        # player trainer
         p, v = trainer.poll(game.get_state(), player_turn)
         [
             print(list(map("{:.2f}".format, x)))
@@ -41,7 +56,7 @@ def duel(trainer, time_limit):
             1,
             exploration=1.4,
             temperature=0,
-            simulations_cap=1,
+            simulations_cap=100,
         )
         a, b = player.search()
         logging.info(a)
@@ -54,21 +69,12 @@ def duel(trainer, time_limit):
         if turn(game, a) is not None:
             return game.winner
 
-        res, move = interface.send_command(f"genmove {'w' if game.player==-1 else 'b'}")
-        if not res:
-            logging.info("Game over")
-
-        y, x = move
-        logging.info(f"bot move = {x} {y}")
-        move = Game.Move(x * 3, y * 2 + x, -1)
-        # move = random.choice(list(game.get_available_moves()))
-        if turn(game, move) is not None:
-            return turn(game, move)
         print(interface.send_command("showboard")[1])
 
 
 if __name__ == "__main__":
     new_trainer = Trainer(model_name="R_3_HEX_NET_2022-12-27_06-37-56")
+    new_trainer = Trainer(model_name="R_3_HEX_NET_2023-01-03_20-03-18")
 
     result = 0
     for i in range(10):

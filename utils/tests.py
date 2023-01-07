@@ -1,7 +1,7 @@
 from __future__ import annotations
 from utils.logger import logging
 from mcts.mcst import MCTS
-from game import Game
+from game import Game, discard_rows_for_print
 from net.trainer import Trainer
 import torch
 
@@ -57,22 +57,59 @@ player_turn = 1
 
 # exit()
 # # new_trainer = Trainer(model_name="NEW_NET_2022-04-21_09-32-57_BEST")
-new_trainer = Trainer(model_name="HEX_NET_2022-07-11_21-36-39")
+new_trainer = Trainer(model_name="R_1_HEX_NET_2022-12-23_17-10-39")
+new_trainer = Trainer(model_name="R_2_HEX_NET_2022-12-24_14-40-14")
+new_trainer = Trainer(model_name="R_3_HEX_NET_2022-12-24_23-02-27")
+new_trainer = Trainer(model_name="R_3_HEX_NET_2022-12-25_15-26-10")
+new_trainer = Trainer(model_name="R_3_HEX_NET_2022-12-26_05-17-54")
+new_trainer = Trainer(model_name="R_3_HEX_NET_2022-12-27_06-37-56")
 game = Game(player=1)
+if game.player == -1:
+    x, y = map(int, input(":").split(" "))
+    move = Game.Move(x * 3, y * 2 + x, -1)
+    # move = random.choice(list(game.get_available_moves()))
+    turn(game, move)
 while 1:
-    logging.info(new_trainer.poll(game.get_state(), player_turn))
-    player = MCTS(new_trainer, game.get_state(), 1, exploration=1.4, temperature=0)
+    p, v = new_trainer.poll(game.get_state(), player_turn)
+    [print(list(map("{:.2f}".format, x))) for x in discard_rows_for_print(p.tolist())]
+    # logging.info(discard_rows_for_print(p.tolist()))
+    logging.info(v)
+    player = MCTS(
+        new_trainer,
+        game.get_state(),
+        1,
+        exploration=1.4,
+        temperature=0,
+        simulations_cap=1,
+    )
     a, b = player.search()
     logging.info(a)
-    logging.info(b)
+    logging.info(discard_rows_for_print(b))
     turn(game, a)
 
     x, y = map(int, input(":").split(" "))
-    move = Game.Move(x, y, -1)
+    move = Game.Move(x * 3, y * 2 + x, -1)
     # move = random.choice(list(game.get_available_moves()))
     turn(game, move)
 
-
+g = [
+    [0, 0, 0, 0, -1, 0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, -1, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, -1, 0, 1, 0, 1, 0, -1, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, -1, 0, -1, 0, 1, 0, 0],
+]
+game = Game(g)
+logging.info(new_trainer.poll(game.get_state(), 1))
+player = MCTS(new_trainer, game.get_state(), 1, exploration=1.4, temperature=0)
+a, b = player.search()
+logging.info(a)
+logging.info(b)
 # game = Game([[1, 0, 0], [-1, -1, 0], [1, 0, -1]])
 # game = Game([[0, 0, 0], [1, 0, -1], [-1, 0, 0]])
 # logging.info(new_trainer.poll(game.get_state(), player_turn))
