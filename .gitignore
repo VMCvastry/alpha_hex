@@ -3,7 +3,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+mopyhex/
+/mopyhex/
 # C extensions
 *.so
 
@@ -144,3 +145,4 @@ models/
 old_mcst/
 training_data/
 client_secrets.json
+/mopyhex/

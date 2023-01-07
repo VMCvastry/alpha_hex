@@ -56,7 +56,10 @@ class MCTS:
             # logging.debug(Aux_MCTS.pick_best_move(self.graph, self.temperature))
         Aux_MCTS.normalize_layer(self.graph)
         move = Aux_MCTS.pick_best_move(
-            self.graph, self.temperature if self.stage > 1 else 4 - self.stage
+            self.graph,
+            self.temperature
+            if self.stage > 1 or self.temperature == 0
+            else 4 - self.stage,
         )  # To recognize first and second move
         move.mark = self.player
         return (
