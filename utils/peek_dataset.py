@@ -15,6 +15,7 @@ test_loader_one = CustomDataset.load("./training_data", "R_3_HEX_10")
 test_loader_one = CustomDataset.load("./training_data", "R_3_HEX_23")
 test_loader_one = CustomDataset.load("./training_data", "R_3_HEX_108")
 test_loader_one = CustomDataset.load("./training_data", "R_3_HEX_150")
+test_loader_one = CustomDataset.load("./training_data", "R_3_HEX_181")
 test_loader_one = DataLoader(test_loader_one, batch_size=1, shuffle=True)
 for samples, targets1, targets2 in test_loader_one:
     # print(samples.size())

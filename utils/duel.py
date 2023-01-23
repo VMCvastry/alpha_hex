@@ -82,6 +82,7 @@ if __name__ == "__main__":
     model_2 = "WINNER_NET_2022-06-03_18-16-50"
 
     model_1 = "R_3_HEX_NET_2022-12-27_06-37-56"
-    model_2 = "R_3_HEX_NET_2023-01-03_20-03-18"
+    model_1 = "R_3_HEX_NET_2023-01-03_20-03-18"
+    model_2 = "R_3_HEX_NET_2023-01-08_16-31-31"
 
     print(find_best(model_1, model_2))
