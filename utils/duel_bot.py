@@ -21,13 +21,13 @@ def turn(game, move):
         return game.winner
 
 
-def duel(trainer, time_limit):
+def duel(trainer, first, time_limit, step_limit):
     player_turn = 1
-    game = Game(player=player_turn * -1)
+    game = Game(player=player_turn * first)
     agent = mctsagent()
-    interface = gtpinterface(agent, time_limit)
+    interface = gtpinterface(agent, time_limit, step_limit)
     interface.send_command(f"size {HEX_GRID_SIZE}")
-    while 1:
+    if first == -1:
         # player bot
         res, move = interface.send_command(
             f"genmove {'w' if game.player == -1 else 'b'}"
@@ -41,6 +41,8 @@ def duel(trainer, time_limit):
         # move = random.choice(list(game.get_available_moves()))
         if turn(game, move) is not None:
             return turn(game, move)
+
+    while 1:
 
         # player trainer
         p, v = trainer.poll(game.get_state(), player_turn)
@@ -56,7 +58,8 @@ def duel(trainer, time_limit):
             1,
             exploration=1.4,
             temperature=0,
-            simulations_cap=100,
+            simulations_cap=10,
+            # time_cap=3,
         )
         a, b = player.search()
         logging.info(a)
@@ -71,14 +74,34 @@ def duel(trainer, time_limit):
 
         print(interface.send_command("showboard")[1])
 
+        # player bot
+        res, move = interface.send_command(
+            f"genmove {'w' if game.player == -1 else 'b'}"
+        )
+        if not res:
+            logging.info("Game over")
+
+        y, x = move
+        logging.info(f"bot move = {x} {y}")
+        move = Game.Move(x * 3, y * 2 + x, -1)
+        # move = random.choice(list(game.get_available_moves()))
+        if turn(game, move) is not None:
+            return turn(game, move)
+
 
 if __name__ == "__main__":
     new_trainer = Trainer(model_name="R_3_HEX_NET_2022-12-27_06-37-56")
     new_trainer = Trainer(model_name="R_3_HEX_NET_2023-01-03_20-03-18")
-
+    new_trainer = Trainer(model_name="R_3_HEX_NET_2023-01-08_16-31-31")
     result = 0
+
     for i in range(10):
         logging.info(f"Game {i}")
-        result += duel(new_trainer, 0.05)
+        result += duel(
+            new_trainer,
+            time_limit=1000,
+            first=-1,
+            step_limit=1000,
+        )
         logging.info(f"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n\n{result}")
     logging.info(f"Result: {result}")

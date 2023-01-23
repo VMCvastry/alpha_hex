@@ -43,14 +43,17 @@ class MCTS:
             temperature = TEMPERATURE
         if simulations_cap is None:
             simulations_cap = SIMULATIONS_CAP
+        if time_cap is None:
+            time_cap = TIME_CAP
         self.simulation_cap = simulations_cap
         self.temperature = temperature
         self.exploration = exploration
+        self.time_cap = time_cap
 
     def search(self) -> tuple[Game.Move, list[list]]:
         while (
             self.total_simulations < self.simulation_cap
-            and time.time() - self.start_time < TIME_CAP
+            and time.time() - self.start_time < self.time_cap
         ):
             self.step()
             # logging.debug(Aux_MCTS.pick_best_move(self.graph, self.temperature))

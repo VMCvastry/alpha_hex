@@ -188,25 +188,48 @@ class Game:
         )
 
     def __repr__(self):
-        return (
-            "\n"
-            + "\n".join(
-                discard_rows_for_print(
-                    [
-                        str(
-                            [
-                                str(self.board[x][y].value)
-                                if self.board[x][y].valid
-                                else " "
-                                for y in range(GRID_SIZE)
-                            ]
-                        )
-                        for x in range(GRID_SIZE)
-                    ]
-                )
-            )
-            + "\n"
+        # return (
+        #     "\n"
+        #     + "\n".join(
+        #         discard_rows_for_print(
+        #             [
+        #                 str(
+        #                     [
+        #                         str(self.board[x][y].value)
+        #                         if self.board[x][y].valid
+        #                         else " "
+        #                         for y in range(GRID_SIZE)
+        #                     ]
+        #                 )
+        #                 for x in range(GRID_SIZE)
+        #             ]
+        #         )
+        #     )
+        #     + "\n"
+        # )
+
+        raw = discard_rows_for_print(
+            [
+                [
+                    self.board[x][y].value if self.board[x][y].valid else " "
+                    for y in range(GRID_SIZE)
+                ]
+                for x in range(GRID_SIZE)
+            ]
         )
+        string = ""
+        for row in raw:
+            string += "\n"
+            for cell in row:
+                if cell == 0:
+                    string += "."
+                elif cell == 1:
+                    string += "X"
+                elif cell == -1:
+                    string += "O"
+                else:
+                    string += " "
+        return string
 
 
 if __name__ == "__main__":
