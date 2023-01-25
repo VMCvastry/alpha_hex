@@ -57,13 +57,13 @@ class MCTS:
         ):
             self.step()
             # logging.debug(Aux_MCTS.pick_best_move(self.graph, self.temperature))
-        Aux_MCTS.normalize_layer(self.graph)
-        move = Aux_MCTS.pick_best_move(
-            self.graph,
+        temp = (
             self.temperature
             if self.stage > 1 or self.temperature == 0
-            else 4 - self.stage,
+            else 4 - self.stage
         )  # To recognize first and second move
+        Aux_MCTS.gen_posterior(self.graph, self.temperature)
+        move = Aux_MCTS.pick_best_move(self.graph)
         move.mark = self.player
         return (
             Game.Move(*flip_correct_point(move.x, move.y, self.player), self.player),
@@ -76,9 +76,7 @@ class MCTS:
         self.total_simulations += 1
         next_node = self.graph
         while True:
-            if (
-                next_node.visits < 1 or not next_node.subs
-            ):  # todo check "or not next_node.subs", should be good
+            if not next_node.subs:  # or next_node.visits < 1
                 break
             next_node = Aux_MCTS.choose_child(next_node, self.exploration)
         outcome = self.simulate(next_node)
@@ -90,5 +88,9 @@ class MCTS:
         if game.winner is not None:
             return game.winner
         moves, outcome = self.network.poll(node.state, turn_player)
+        # even = torch.Tensor(
+        #     [[0.1 for _ in range(GRID_SIZE**2)] for _ in range(GRID_SIZE**2)]
+        # )
+        # moves, outcome = even, 0
         Aux_MCTS.expand(node, moves, game)
         return turn_player * outcome

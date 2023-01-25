@@ -25,7 +25,7 @@ def duel(trainer1: Trainer, trainer2: Trainer):
             game.get_state(),
             game.player,
             exploration=1.4,
-            temperature=1,
+            temperature=0,
             simulations_cap=1,
         )
         move, _ = player.search()
@@ -37,7 +37,7 @@ def duel(trainer1: Trainer, trainer2: Trainer):
             game.get_state(),
             game.player,
             exploration=1.4,
-            temperature=1,
+            temperature=0,
             simulations_cap=1,
         )
         move, _ = player.search()
