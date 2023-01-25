@@ -28,10 +28,12 @@ class Game:
         self.winner = None
         self.player = player
         self.build_board()
+        self.first_move = True
         if board is not None:
             for i, row in enumerate(board):
                 for j, cell in enumerate(row):
                     self.board[i][j].value = cell
+            self.first_move = False
 
         if self.check_if_won(self.player * -1):
             self.winner = self.player * -1
@@ -132,6 +134,7 @@ class Game:
             self.winner = self.player
             return
         self.player = -1 * self.player
+        self.first_move = False
 
     def get_marked_state(self, move: Move) -> list[list[int]]:
         state = self.get_state()
@@ -156,8 +159,8 @@ class Game:
             for j in range(GRID_SIZE):
                 if (
                     # self.board[i][j] and
-                    self.board[i][j].value == 0
-                    and self.board[i][j].valid
+                    self.board[i][j].valid
+                    and (self.board[i][j].value == 0 or self.first_move)
                 ):
                     moves.add(Game.Move(i, j, self.player))
         return moves
