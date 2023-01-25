@@ -114,7 +114,7 @@ class Aux_MCTS:
         return max(node.subs, key=lambda x: x.interest)
 
     @staticmethod
-    def expand(node: Aux_MCTS.Node, prior_moves, game: Game):
+    def expand(node: Aux_MCTS.Node, prior_moves, game: Game, add_dirichlet=False):
         for move in game.get_available_moves():
             new_state = game.get_marked_state(move)
             node.subs.add(
@@ -126,8 +126,11 @@ class Aux_MCTS:
                 )
             )
         total = sum(n.prior for n in node.subs)
-        for n in node.subs:
+        noise = np.random.dirichlet((0.03,), len(node.subs))
+        for i, n in enumerate(node.subs):
             n.prior = n.prior / total
+            if add_dirichlet:
+                n.prior = n.prior * 0.75 + noise[i][0] * 0.25
         node.expanded = True
 
     @staticmethod

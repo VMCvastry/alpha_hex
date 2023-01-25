@@ -88,9 +88,13 @@ class MCTS:
         if game.winner is not None:
             return game.winner
         moves, outcome = self.network.poll(node.state, turn_player)
+
         # even = torch.Tensor(
         #     [[0.1 for _ in range(GRID_SIZE**2)] for _ in range(GRID_SIZE**2)]
         # )
         # moves, outcome = even, 0
-        Aux_MCTS.expand(node, moves, game)
+        if self.total_simulations < 2:
+            Aux_MCTS.expand(node, moves, game, add_dirichlet=True)
+        else:
+            Aux_MCTS.expand(node, moves, game)
         return turn_player * outcome
