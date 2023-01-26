@@ -30,10 +30,13 @@ class Game:
         self.build_board()
         self.first_move = True
         if board is not None:
+            count = 0
             for i, row in enumerate(board):
                 for j, cell in enumerate(row):
                     self.board[i][j].value = cell
-            self.first_move = False
+                    count += abs(cell)
+            if count != 0:
+                self.first_move = False
 
         if self.check_if_won(self.player * -1):
             self.winner = self.player * -1
@@ -134,11 +137,19 @@ class Game:
             self.winner = self.player
             return
         self.player = -1 * self.player
+        if self.first_move:
+            self.board[GRID_SIZE - 1][0].value = 2  # to mark second move
+        else:
+            self.board[GRID_SIZE - 1][0].value = 0
         self.first_move = False
 
     def get_marked_state(self, move: Move) -> list[list[int]]:
         state = self.get_state()
         state[move.x][move.y] = move.mark
+        if self.first_move:
+            state[GRID_SIZE - 1][0] = 2  # to mark second move
+        else:
+            state[GRID_SIZE - 1][0] = 0
         return state
 
     def check_if_stale(self) -> bool:
@@ -155,12 +166,13 @@ class Game:
 
     def get_available_moves(self) -> set[Game.Move]:
         moves = set()
+        second_move = self.board[GRID_SIZE - 1][0].value == 2
         for i in range(GRID_SIZE):
             for j in range(GRID_SIZE):
                 if (
                     # self.board[i][j] and
                     self.board[i][j].valid
-                    and (self.board[i][j].value == 0 or self.first_move)
+                    and (self.board[i][j].value == 0 or second_move)
                 ):
                     moves.add(Game.Move(i, j, self.player))
         return moves
@@ -232,7 +244,7 @@ class Game:
                     string += "O"
                 else:
                     string += " "
-        return string
+        return string + f"{self.first_move},{self.board[GRID_SIZE - 1][0].value}"
 
 
 if __name__ == "__main__":

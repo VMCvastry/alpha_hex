@@ -28,6 +28,8 @@ def flip(board: list[list[int]], flip_sign=True) -> list[list[int]]:
                 )  # -1 to flip the sign
                 jj += 1
     # [print(x) for x in new_board]
+    if board[GRID_SIZE - 1][0] == 2:  # check second move
+        new_board[GRID_SIZE - 1][0] = 2
     return new_board
 
 
