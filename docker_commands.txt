@@ -1,0 +1,9 @@
+ 
+sudo docker build -t alpha_hex .
+sudo docker image rm alpha_hex
+sudo docker rm $(sudo docker ps -a -q)
+sudo docker run -it alpha_hex bash
+sudo docker images
+docker images --filter dangling=true #lists all images that are dangling and has no pointer to it
+docker rmi `docker images --filter dangling=true -q` #Removes all those images.
+docker image prune

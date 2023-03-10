@@ -1,0 +1,4 @@
+./models/
+./training_data/
+./paperspace_api.txt
+./client_secrets.json

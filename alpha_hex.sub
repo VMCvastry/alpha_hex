@@ -1,0 +1,19 @@
+Universe = docker
+docker_image=di.registry:443/gladia/vmcamaiani/alpha_hex
+jobname = alpha_hex_training
+executable              = train.sh
+//arguments               = $(ProcId)
+Log        = condor_logs/$(ClusterId).$(ProcId).log
+Output     = condor_logs/out$(ClusterId)_$(ProcId)
+Error      = condor_logs/err$(ClusterId)_$(ProcId)
+transfer_input_files     = train.sh
+should_transfer_files   = YES
+request_cpus            = 16
+request_memory          = 16GB
+request_disk            = 32GB
+request_gpus            = 1
+require_gpus            = 1
++MountData1=FALSE
++MountData2=FALSE
++MountHomes=FALSE
+queue 1
